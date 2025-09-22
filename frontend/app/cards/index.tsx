@@ -13,6 +13,24 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 
+// Dil desteği
+const translations = {
+  en: {
+    title: "Major Arcana",
+    subtitle: "The 22 cards representing life's major themes and lessons",
+    loading: "Loading Major Arcana Cards...",
+    error: "Error",
+    errorMessage: "Failed to load tarot cards. Please try again."
+  },
+  tr: {
+    title: "Büyük Arkana",
+    subtitle: "Hayatın ana temalarını ve derslerini temsil eden 22 kart",
+    loading: "Büyük Arkana Kartları Yükleniyor...",
+    error: "Hata",
+    errorMessage: "Tarot kartları yüklenemedi. Lütfen tekrar deneyin."
+  }
+};
+
 interface TarotCard {
   id: number;
   name: string;
