@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   Alert,
   Dimensions,
+  TouchableOpacity,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
@@ -16,6 +17,34 @@ import { useLocalSearchParams } from 'expo-router';
 const { width } = Dimensions.get('window');
 const CARD_WIDTH = width * 0.4;
 const CARD_HEIGHT = CARD_WIDTH * 1.5;
+
+// Dil desteği
+const translations = {
+  en: {
+    loading: "Loading card details...",
+    error: "Error",
+    errorMessage: "Failed to load card details. Please try again.",
+    cardNotFound: "Card not found",
+    keywords: "Keywords",
+    description: "Description",
+    uprightMeaning: "Upright Meaning",
+    reversedMeaning: "Reversed Meaning",
+    symbolism: "Symbolism",
+    yesNoReading: "Yes/No Reading"
+  },
+  tr: {
+    loading: "Kart detayları yükleniyor...",
+    error: "Hata",
+    errorMessage: "Kart detayları yüklenemedi. Lütfen tekrar deneyin.",
+    cardNotFound: "Kart bulunamadı",
+    keywords: "Anahtar Kelimeler",
+    description: "Açıklama",
+    uprightMeaning: "Düz Anlam",
+    reversedMeaning: "Ters Anlam",
+    symbolism: "Sembolizm",
+    yesNoReading: "Evet/Hayır Falı"
+  }
+};
 
 interface TarotCard {
   id: number;
@@ -33,18 +62,24 @@ export default function CardDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const [card, setCard] = useState<TarotCard | null>(null);
   const [loading, setLoading] = useState(true);
+  const [language, setLanguage] = useState('tr'); // Varsayılan Türkçe
+  const t = translations[language];
 
   const BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL;
+
+  const toggleLanguage = () => {
+    setLanguage(language === 'en' ? 'tr' : 'en');
+  };
 
   useEffect(() => {
     if (id) {
       fetchCard();
     }
-  }, [id]);
+  }, [id, language]); // language değiştiğinde de yeniden yükle
 
   const fetchCard = async () => {
     try {
-      const response = await fetch(`${BACKEND_URL}/api/cards/${id}`);
+      const response = await fetch(`${BACKEND_URL}/api/cards/${id}?language=${language}`);
       if (!response.ok) {
         throw new Error('Failed to fetch card');
       }
@@ -52,7 +87,7 @@ export default function CardDetailScreen() {
       setCard(cardData);
     } catch (error) {
       console.error('Error fetching card:', error);
-      Alert.alert('Error', 'Failed to load card details. Please try again.');
+      Alert.alert(t.error, t.errorMessage);
     } finally {
       setLoading(false);
     }
