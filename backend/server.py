@@ -754,8 +754,8 @@ async def get_reading_types():
     return [ReadingType(**reading_type) for reading_type in READING_TYPES]
 
 @api_router.post("/reading/{reading_type}", response_model=TarotReading)
-async def create_reading(reading_type: str, question: Optional[str] = None):
-    """Create a new tarot reading"""
+async def create_reading(reading_type: str, question: Optional[str] = None, language: str = "en"):
+    """Create a new tarot reading with language support"""
     # Find reading type configuration
     reading_config = None
     for rt in READING_TYPES:
@@ -769,18 +769,44 @@ async def create_reading(reading_type: str, question: Optional[str] = None):
     # Select random cards
     selected_cards = random.sample(MAJOR_ARCANA, reading_config["card_count"])
     
-    # Create cards with positions
+    # Create cards with positions - use appropriate language
     reading_cards = []
-    for i, card in enumerate(selected_cards):
-        card_data = {
-            "card": card,
+    for i, card_data in enumerate(selected_cards):
+        # Use Turkish data if language is tr, otherwise English
+        if language == "tr":
+            card_info = {
+                "id": card_data["id"],
+                "name": card_data.get("name_tr", card_data["name"]),
+                "image_url": card_data["image_url"],
+                "keywords": card_data.get("keywords_tr", card_data["keywords"]),
+                "meaning_upright": card_data.get("meaning_upright_tr", card_data["meaning_upright"]),
+                "meaning_reversed": card_data.get("meaning_reversed_tr", card_data["meaning_reversed"]),
+                "description": card_data.get("description_tr", card_data["description"]),
+                "symbolism": card_data.get("symbolism_tr", card_data["symbolism"]),
+                "yes_no_meaning": card_data.get("yes_no_meaning_tr", card_data["yes_no_meaning"])
+            }
+        else:
+            card_info = {
+                "id": card_data["id"],
+                "name": card_data["name"],
+                "image_url": card_data["image_url"],
+                "keywords": card_data["keywords"],
+                "meaning_upright": card_data["meaning_upright"],
+                "meaning_reversed": card_data["meaning_reversed"],
+                "description": card_data["description"],
+                "symbolism": card_data["symbolism"],
+                "yes_no_meaning": card_data["yes_no_meaning"]
+            }
+        
+        card_with_position = {
+            "card": card_info,
             "position": reading_config["positions"][i],
             "reversed": random.choice([True, False])  # Random orientation
         }
-        reading_cards.append(card_data)
+        reading_cards.append(card_with_position)
     
-    # Generate interpretation based on reading type
-    interpretation = generate_interpretation(reading_type, reading_cards, question)
+    # Generate interpretation based on reading type and language
+    interpretation = generate_interpretation(reading_type, reading_cards, question, language)
     
     # Create reading object
     reading = TarotReading(
