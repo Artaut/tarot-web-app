@@ -219,8 +219,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
-  },
-  readingCardGradient: {
     padding: 20,
   },
   readingCardContent: {
@@ -276,8 +274,6 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     borderRadius: 12,
     overflow: 'hidden',
-  },
-  featureCardGradient: {
     padding: 16,
     flexDirection: 'row',
     alignItems: 'center',
