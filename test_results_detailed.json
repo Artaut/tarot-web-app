@@ -1,0 +1,86 @@
+[
+  {
+    "test": "Root Endpoint",
+    "success": true,
+    "message": "API is running and accessible",
+    "timestamp": "2025-09-22T10:57:29.248587",
+    "details": {}
+  },
+  {
+    "test": "Get All Cards",
+    "success": true,
+    "message": "Successfully retrieved 22 cards with proper structure",
+    "timestamp": "2025-09-22T10:57:29.257519",
+    "details": {}
+  },
+  {
+    "test": "Get Specific Card",
+    "success": true,
+    "message": "Successfully retrieved The Fool card with all fields",
+    "timestamp": "2025-09-22T10:57:29.266141",
+    "details": {}
+  },
+  {
+    "test": "Get Invalid Card",
+    "success": true,
+    "message": "Properly returns 404 for invalid card ID",
+    "timestamp": "2025-09-22T10:57:29.274254",
+    "details": {}
+  },
+  {
+    "test": "Get Reading Types",
+    "success": true,
+    "message": "Successfully retrieved 5 reading types with proper structure",
+    "timestamp": "2025-09-22T10:57:29.321996",
+    "details": {}
+  },
+  {
+    "test": "Create Reading (card_of_day)",
+    "success": true,
+    "message": "Successfully created reading with 1 cards and interpretation",
+    "timestamp": "2025-09-22T10:57:29.344702",
+    "details": {}
+  },
+  {
+    "test": "Create Reading (classic_tarot)",
+    "success": true,
+    "message": "Successfully created reading with 3 cards and interpretation",
+    "timestamp": "2025-09-22T10:57:29.352163",
+    "details": {}
+  },
+  {
+    "test": "Create Reading (path_of_day)",
+    "success": true,
+    "message": "Successfully created reading with 4 cards and interpretation",
+    "timestamp": "2025-09-22T10:57:29.360068",
+    "details": {}
+  },
+  {
+    "test": "Create Reading (couples_tarot)",
+    "success": true,
+    "message": "Successfully created reading with 5 cards and interpretation",
+    "timestamp": "2025-09-22T10:57:29.367263",
+    "details": {}
+  },
+  {
+    "test": "Create Reading (yes_no)",
+    "success": true,
+    "message": "Successfully created reading with 1 cards and interpretation",
+    "timestamp": "2025-09-22T10:57:29.415281",
+    "details": {}
+  },
+  {
+    "test": "Create Invalid Reading",
+    "success": true,
+    "message": "Properly returns 404 for invalid reading type",
+    "timestamp": "2025-09-22T10:57:29.421196",
+    "details": {}
+  },
+  {
+    "test": "Get Readings",
+    "success": true,
+    "message": "Successfully retrieved 5 readings",
+    "timestamp": "2025-09-22T10:57:29.428709",
+    "details": {}
+  }
+]
