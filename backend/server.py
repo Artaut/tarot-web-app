@@ -833,7 +833,12 @@ def generate_interpretation(reading_type: str, cards: List[Dict], question: Opti
     if reading_type == "card_of_day":
         card = cards[0]["card"]
         reversed = cards[0]["reversed"]
-        meaning = card["meaning_reversed"] if reversed else card["meaning_upright"]
+        
+        # Use language-specific meaning
+        meaning_key = f"meaning_{'reversed' if reversed else 'upright'}"
+        if language == "tr":
+            meaning_key += "_tr"
+        meaning = card.get(meaning_key, card['meaning_reversed' if reversed else 'meaning_upright'])
         
         if language == "tr":
             interpretation = f"Bugünün kartınız {card['name']}{'(Ters)' if reversed else ''}.\n\n{meaning}\n\nBu kart bugün {', '.join(card['keywords'][:2])} konularına odaklanmanız gerektiğini önerir. {card['description']}"
@@ -850,7 +855,13 @@ def generate_interpretation(reading_type: str, cards: List[Dict], question: Opti
             card = card_data["card"]
             position = card_data["position"]
             reversed = card_data["reversed"]
-            meaning = card["meaning_reversed"] if reversed else card["meaning_upright"]
+            
+            # Use language-specific meaning
+            meaning_key = f"meaning_{'reversed' if reversed else 'upright'}"
+            if language == "tr":
+                meaning_key += "_tr"
+            meaning = card.get(meaning_key, card['meaning_reversed' if reversed else 'meaning_upright'])
+            
             interpretation += f"**{position}: {card['name']}{'(Ters)' if reversed and language == 'tr' else '(Reversed)' if reversed else ''}**\n{meaning}\n\n"
         
         if language == "tr":
@@ -870,7 +881,13 @@ def generate_interpretation(reading_type: str, cards: List[Dict], question: Opti
             card = card_data["card"]
             position = card_data["position"]
             reversed = card_data["reversed"]
-            meaning = card["meaning_reversed"] if reversed else card["meaning_upright"]
+            
+            # Use language-specific meaning
+            meaning_key = f"meaning_{'reversed' if reversed else 'upright'}"
+            if language == "tr":
+                meaning_key += "_tr"
+            meaning = card.get(meaning_key, card['meaning_reversed' if reversed else 'meaning_upright'])
+            
             interpretation += f"**{position}: {card['name']}{'(Ters)' if reversed and language == 'tr' else '(Reversed)' if reversed else ''}**\n{meaning}\n"
             if language == "tr":
                 interpretation += f"Bugün {advice_areas[i]} odaklanın.\n\n"
@@ -901,7 +918,13 @@ def generate_interpretation(reading_type: str, cards: List[Dict], question: Opti
             card = card_data["card"]
             position = card_data["position"]
             reversed = card_data["reversed"]
-            meaning = card["meaning_reversed"] if reversed else card["meaning_upright"]
+            
+            # Use language-specific meaning
+            meaning_key = f"meaning_{'reversed' if reversed else 'upright'}"
+            if language == "tr":
+                meaning_key += "_tr"
+            meaning = card.get(meaning_key, card['meaning_reversed' if reversed else 'meaning_upright'])
+            
             interpretation += f"**{position}: {card['name']}{'(Ters)' if reversed and language == 'tr' else '(Reversed)' if reversed else ''}**\n{meaning}\n"
             if language == "tr":
                 interpretation += f"Bu {relationship_aspects[i]} ile ilgilidir.\n\n"
@@ -911,12 +934,24 @@ def generate_interpretation(reading_type: str, cards: List[Dict], question: Opti
     elif reading_type == "yes_no":
         card = cards[0]["card"]
         reversed = cards[0]["reversed"]
-        yes_no_answer = "Hayır" if reversed and language == "tr" else "No" if reversed else card["yes_no_meaning"]
+        
+        # Use language-specific meaning
+        meaning_key = f"meaning_{'reversed' if reversed else 'upright'}"
+        if language == "tr":
+            meaning_key += "_tr"
+        meaning = card.get(meaning_key, card['meaning_reversed' if reversed else 'meaning_upright'])
+        
+        if reversed:
+            yes_no_answer = "Hayır" if language == "tr" else "No"
+        else:
+            # Use language-specific yes_no_meaning
+            yes_no_key = "yes_no_meaning_tr" if language == "tr" else "yes_no_meaning"
+            yes_no_answer = card.get(yes_no_key, card["yes_no_meaning"])
         
         if language == "tr":
-            interpretation = f"**Soru**: {question or 'Sorunuz'}\n\n**Cevap**: {yes_no_answer}\n\n**Kart**: {card['name']}{'(Ters)' if reversed else ''}\n\n**Gerekçe**: {card['meaning_reversed'] if reversed else card['meaning_upright']}"
+            interpretation = f"**Soru**: {question or 'Sorunuz'}\n\n**Cevap**: {yes_no_answer}\n\n**Kart**: {card['name']}{'(Ters)' if reversed else ''}\n\n**Gerekçe**: {meaning}"
         else:
-            interpretation = f"**Question**: {question or 'Your question'}\n\n**Answer**: {yes_no_answer}\n\n**Card**: {card['name']}{'(Reversed)' if reversed else ''}\n\n**Reasoning**: {card['meaning_reversed'] if reversed else card['meaning_upright']}"
+            interpretation = f"**Question**: {question or 'Your question'}\n\n**Answer**: {yes_no_answer}\n\n**Card**: {card['name']}{'(Reversed)' if reversed else ''}\n\n**Reasoning**: {meaning}"
     
     return interpretation
 
