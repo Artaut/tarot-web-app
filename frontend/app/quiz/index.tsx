@@ -101,10 +101,18 @@ const DIFFICULTY_LEVELS = [
 ];
 
 export default function QuizScreen() {
-  const handleDifficultySelect = (difficulty: string) => {
+  const [language, setLanguage] = useState('tr'); // Varsayılan Türkçe
+  const t = translations[language];
+
+  const toggleLanguage = () => {
+    setLanguage(language === 'en' ? 'tr' : 'en');
+  };
+
+  const handleDifficultySelect = (difficultyId: string) => {
+    const difficultyName = t.levels[difficultyId as keyof typeof t.levels].name;
     Alert.alert(
-      'Quiz Feature',
-      `The ${difficulty} quiz with 198 questions across 3 difficulty levels is coming soon! This will help you master the 22 Major Arcana cards.`,
+      t.comingSoon,
+      t.comingSoonMessage.replace('{difficulty}', difficultyName),
       [{ text: 'OK', style: 'default' }]
     );
   };
@@ -113,15 +121,27 @@ export default function QuizScreen() {
     <SafeAreaView style={styles.container}>
       <LinearGradient colors={['#0a0a0a', '#1a1a2e', '#16213e']} style={styles.background}>
         <ScrollView showsVerticalScrollIndicator={false}>
+          {/* Language Toggle Button */}
+          <View style={styles.languageContainer}>
+            <TouchableOpacity 
+              style={styles.languageButton}
+              onPress={toggleLanguage}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="language" size={20} color="white" />
+              <Text style={styles.languageText}>
+                {language === 'en' ? 'TR' : 'EN'}
+              </Text>
+            </TouchableOpacity>
+          </View>
+
           {/* Header */}
           <View style={styles.header}>
             <View style={styles.iconContainer}>
               <Ionicons name="school" size={48} color="#9C88FF" />
             </View>
-            <Text style={styles.title}>Tarot Quiz Game</Text>
-            <Text style={styles.subtitle}>
-              Master the 22 Major Arcana with 198 questions across 3 levels of difficulty
-            </Text>
+            <Text style={styles.title}>{t.title}</Text>
+            <Text style={styles.subtitle}>{t.subtitle}</Text>
           </View>
 
           {/* Quiz Info */}
@@ -133,15 +153,15 @@ export default function QuizScreen() {
               >
                 <View style={styles.infoRow}>
                   <Ionicons name="help-circle" size={24} color="#9C88FF" />
-                  <Text style={styles.infoText}>198 Questions Total</Text>
+                  <Text style={styles.infoText}>{t.questionsTotal}</Text>
                 </View>
                 <View style={styles.infoRow}>
                   <Ionicons name="layers" size={24} color="#9C88FF" />
-                  <Text style={styles.infoText}>3 Difficulty Levels</Text>
+                  <Text style={styles.infoText}>{t.difficultyLevels}</Text>
                 </View>
                 <View style={styles.infoRow}>
                   <Ionicons name="star" size={24} color="#9C88FF" />
-                  <Text style={styles.infoText}>22 Major Arcana Cards</Text>
+                  <Text style={styles.infoText}>{t.majorArcanaCards}</Text>
                 </View>
               </LinearGradient>
             </View>
@@ -149,13 +169,13 @@ export default function QuizScreen() {
 
           {/* Difficulty Levels */}
           <View style={styles.levelsContainer}>
-            <Text style={styles.sectionTitle}>Choose Your Level</Text>
+            <Text style={styles.sectionTitle}>{t.chooseLevel}</Text>
             
             {DIFFICULTY_LEVELS.map((level, index) => (
               <TouchableOpacity
                 key={level.id}
                 style={styles.levelCard}
-                onPress={() => handleDifficultySelect(level.name)}
+                onPress={() => handleDifficultySelect(level.id)}
                 activeOpacity={0.7}
               >
                 <LinearGradient
@@ -177,11 +197,15 @@ export default function QuizScreen() {
                       </View>
                     </View>
                     
-                    <Text style={styles.levelTitle}>{level.name}</Text>
-                    <Text style={styles.levelDescription}>{level.description}</Text>
+                    <Text style={styles.levelTitle}>
+                      {t.levels[level.id as keyof typeof t.levels].name}
+                    </Text>
+                    <Text style={styles.levelDescription}>
+                      {t.levels[level.id as keyof typeof t.levels].description}
+                    </Text>
                     
                     <View style={styles.levelFooter}>
-                      <Text style={styles.levelAction}>Start Quiz</Text>
+                      <Text style={styles.levelAction}>{t.startQuiz}</Text>
                       <Ionicons name="arrow-forward" size={20} color="rgba(255,255,255,0.8)" />
                     </View>
                   </View>
@@ -192,42 +216,30 @@ export default function QuizScreen() {
 
           {/* Learning Tips */}
           <View style={styles.tipsContainer}>
-            <Text style={styles.sectionTitle}>Learning Tips</Text>
+            <Text style={styles.sectionTitle}>{t.learningTips}</Text>
             
             <View style={styles.tipCard}>
               <LinearGradient
                 colors={['rgba(255, 255, 255, 0.05)', 'rgba(255, 255, 255, 0.02)']}
                 style={styles.tipCardGradient}
               >
-                <View style={styles.tipRow}>
-                  <Ionicons name="bulb" size={20} color="#FFD700" />
-                  <Text style={styles.tipText}>
-                    Start with the Card Meanings section to familiarize yourself with each card
-                  </Text>
-                </View>
-                
-                <View style={styles.tipRow}>
-                  <Ionicons name="refresh" size={20} color="#4CAF50" />
-                  <Text style={styles.tipText}>
-                    Practice different reading types to understand card contexts
-                  </Text>
-                </View>
-                
-                <View style={styles.tipRow}>
-                  <Ionicons name="trending-up" size={20} color="#2196F3" />
-                  <Text style={styles.tipText}>
-                    Progress through difficulty levels gradually for best results
-                  </Text>
-                </View>
+                {t.tips.map((tip, index) => (
+                  <View key={index} style={styles.tipRow}>
+                    <Ionicons 
+                      name={index === 0 ? "bulb" : index === 1 ? "refresh" : "trending-up"} 
+                      size={20} 
+                      color={index === 0 ? "#FFD700" : index === 1 ? "#4CAF50" : "#2196F3"} 
+                    />
+                    <Text style={styles.tipText}>{tip}</Text>
+                  </View>
+                ))}
               </LinearGradient>
             </View>
           </View>
 
           {/* Footer */}
           <View style={styles.footer}>
-            <Text style={styles.footerText}>
-              Learn while you play! Master the ancient art of Tarot reading.
-            </Text>
+            <Text style={styles.footerText}>{t.footerText}</Text>
           </View>
         </ScrollView>
       </LinearGradient>
