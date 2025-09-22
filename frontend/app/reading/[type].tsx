@@ -252,6 +252,20 @@ export default function ReadingScreen() {
                 </TouchableOpacity>
               </View>
 
+              {/* Back to Home Button */}
+              <View style={styles.backButtonContainer}>
+                <TouchableOpacity 
+                  style={styles.backButton}
+                  onPress={() => router.push('/')}
+                  activeOpacity={0.7}
+                >
+                  <Ionicons name="arrow-back" size={20} color="white" />
+                  <Text style={styles.backButtonText}>
+                    {language === 'en' ? 'Home' : 'Ana Sayfa'}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+
               <LinearGradient
                 colors={['#4C63D2', '#7C4DFF']} // Varsayılan renk
                 style={styles.headerGradient}
