@@ -60,73 +60,115 @@ class QuizQuestion(BaseModel):
     card_id: int
     explanation: str
 
-# Major Arcana Data
+# Major Arcana Data - Türkçe ve İngilizce
 MAJOR_ARCANA = [
     {
         "id": 0,
         "name": "The Fool",
+        "name_tr": "Deli",
         "image_url": "/assets/cards/fool.jpg",
         "keywords": ["new beginnings", "innocence", "spontaneity", "free spirit"],
+        "keywords_tr": ["yeni başlangıçlar", "saflık", "spontanlık", "özgür ruh"],
         "meaning_upright": "New beginnings, innocence, spontaneity, a free spirit, adventure, idealism, inexperience.",
+        "meaning_upright_tr": "Yeni başlangıçlar, saflık, spontanlık, özgür ruh, macera, idealizm, deneyimsizlik.",
         "meaning_reversed": "Foolishness, recklessness, being taken advantage of, ignorance, poor judgment, lack of direction.",
+        "meaning_reversed_tr": "Aptallık, dikkatsizlik, kandırılmak, cehalet, kötü yargı, yön eksikliği.",
         "description": "The Fool represents new beginnings, having faith in the future, being inexperienced, not knowing what to expect, having beginner's luck, improvisation and believing in the universe.",
+        "description_tr": "Deli, yeni başlangıçları, geleceğe olan inancı, deneyimsiz olmayı, ne bekleyeceğini bilmemeyi, yeni başlayanların şansını, doğaçlamayı ve evrene inanmayı temsil eder.",
         "symbolism": "The Fool carries a small bag, representing what he needs for his journey. The white rose represents purity, the cliff represents the unknown, and the small dog represents loyalty and protection.",
-        "yes_no_meaning": "Yes - new opportunities and fresh starts await."
+        "symbolism_tr": "Deli küçük bir çanta taşır, bu yolculuğu için neye ihtiyacı olduğunu temsil eder. Beyaz gül saflığı, uçurum bilinmezliği, küçük köpek sadakati ve korumayı temsil eder.",
+        "yes_no_meaning": "Yes - new opportunities and fresh starts await.",
+        "yes_no_meaning_tr": "Evet - yeni fırsatlar ve yeni başlangıçlar sizi bekliyor."
     },
     {
         "id": 1,
         "name": "The Magician",
+        "name_tr": "Büyücü",
         "image_url": "/assets/cards/magician.jpg",
         "keywords": ["manifestation", "resourcefulness", "power", "inspired action"],
+        "keywords_tr": ["tezahür", "beceri", "güç", "ilhamlı eylem"],
         "meaning_upright": "Manifestation, resourcefulness, power, inspired action, determination, skill, ability, concentration.",
+        "meaning_upright_tr": "Tezahür, beceri, güç, ilhamlı eylem, kararlılık, yetenek, yetki, konsantrasyon.",
         "meaning_reversed": "Manipulation, poor planning, untapped talents, deception, lack of energy, weak willpower.",
+        "meaning_reversed_tr": "Manipülasyon, kötü planlama, kullanılmayan yetenekler, aldatma, enerji eksikliği, zayıf irade.",
         "description": "The Magician represents manifestation, resourcefulness, power, and inspired action. He has the ability to turn ideas into reality.",
+        "description_tr": "Büyücü tezahürü, beceriyi, gücü ve ilhamlı eylemi temsil eder. Fikirleri gerçeğe dönüştürme yetisine sahiptir.",
         "symbolism": "The infinity symbol above his head represents unlimited potential. The tools on the table represent the four elements and suits of the tarot.",
-        "yes_no_meaning": "Yes - you have the power to make it happen."
+        "symbolism_tr": "Başının üstündeki sonsuzluk sembolü sınırsız potansiyeli temsil eder. Masadaki aletler dört elementi ve tarot renklerini temsil eder.",
+        "yes_no_meaning": "Yes - you have the power to make it happen.",
+        "yes_no_meaning_tr": "Evet - bunu gerçekleştirme gücüne sahipsiniz."
     },
     {
         "id": 2,
         "name": "The High Priestess",
+        "name_tr": "Yüksek Rahibe",
         "image_url": "/assets/cards/high_priestess.jpg",
         "keywords": ["intuition", "sacred knowledge", "divine feminine", "subconscious mind"],
+        "keywords_tr": ["sezgi", "kutsal bilgi", "ilahi dişilik", "bilinçaltı"],
         "meaning_upright": "Intuition, sacred knowledge, divine feminine, the subconscious mind, higher power, inner voice.",
+        "meaning_upright_tr": "Sezgi, kutsal bilgi, ilahi dişilik, bilinçaltı, yüksek güç, iç ses.",
         "meaning_reversed": "Secrets, disconnected from intuition, withdrawal, silence, repressed feelings, blocked psychic powers.",
+        "meaning_reversed_tr": "Sırlar, sezgiden kopukluk, içe kapanma, sessizlik, bastırılmış duygular, engellenmiş psişik güçler.",
         "description": "The High Priestess represents intuition, sacred knowledge, and the divine feminine. She is a guardian of the subconscious mind and higher wisdom.",
+        "description_tr": "Yüksek Rahibe sezgiyi, kutsal bilgiyi ve ilahi dişiliği temsil eder. Bilinçaltının ve yüksek bilgeliğin koruyucusudur.",
         "symbolism": "She sits between two pillars representing the conscious and subconscious minds. The veil behind her conceals deeper mysteries.",
-        "yes_no_meaning": "Maybe - trust your intuition to guide you."
+        "symbolism_tr": "Bilinçli ve bilinçsiz aklı temsil eden iki sütun arasında oturur. Arkasındaki perde daha derin gizemleri gizler.",
+        "yes_no_meaning": "Maybe - trust your intuition to guide you.",
+        "yes_no_meaning_tr": "Belki - sizi yönlendirmesi için sezginize güvenin."
     },
     {
         "id": 3,
         "name": "The Empress",
+        "name_tr": "İmparatoriçe",
         "image_url": "/assets/cards/empress.jpg",
         "keywords": ["femininity", "beauty", "nature", "nurturing", "abundance"],
+        "keywords_tr": ["kadınlık", "güzellik", "doğa", "besleyicilik", "bolluk"],
         "meaning_upright": "Femininity, beauty, nature, nurturing, abundance, creativity, fertility, motherhood, sensuality.",
+        "meaning_upright_tr": "Kadınlık, güzellik, doğa, besleyicilik, bolluk, yaratıcılık, doğurganlık, annelik, duyusallık.",
         "meaning_reversed": "Creative block, dependence on others, smothering, emptiness, nosiness, lack of growth.",
+        "meaning_reversed_tr": "Yaratıcı blok, başkalarına bağımlılık, boğuculuk, boşluk, meraklılık, büyüme eksikliği.",
         "description": "The Empress represents femininity, beauty, nature, and abundance. She is the mother figure of the tarot, representing fertility and creativity.",
+        "description_tr": "İmparatoriçe kadınlığı, güzelliği, doğayı ve bolluğu temsil eder. Tarot'un anne figürüdür, doğurganlığı ve yaratıcılığı temsil eder.",
         "symbolism": "She is surrounded by nature, representing her connection to the Earth. The crown of stars represents her divine connection.",
-        "yes_no_meaning": "Yes - abundance and growth are coming."
+        "symbolism_tr": "Doğa ile çevrilidir, Dünya ile bağlantısını temsil eder. Yıldız tacı ilahi bağlantısını temsil eder.",
+        "yes_no_meaning": "Yes - abundance and growth are coming.",
+        "yes_no_meaning_tr": "Evet - bolluk ve büyüme geliyor."
     },
     {
         "id": 4,
         "name": "The Emperor",
+        "name_tr": "İmparator",
         "image_url": "/assets/cards/emperor.jpg",
         "keywords": ["authority", "establishment", "structure", "father figure"],
+        "keywords_tr": ["otorite", "kuruluş", "yapı", "baba figürü"],
         "meaning_upright": "Authority, establishment, structure, a father figure, leadership, logic, stability, security, control.",
+        "meaning_upright_tr": "Otorite, kuruluş, yapı, baba figürü, liderlik, mantık, istikrar, güvenlik, kontrol.",
         "meaning_reversed": "Tyrant, domineering, rigid, stubborn, lack of discipline, recklessness, abusive power.",
+        "meaning_reversed_tr": "Tiran, baskıcı, katı, inatçı, disiplin eksikliği, dikkatsizlik, kötüye kullanılan güç.",
         "description": "The Emperor represents authority, establishment, and structure. He is the father figure of the tarot, representing leadership and control.",
+        "description_tr": "İmparator otoriteyi, kuruluşu ve yapıyı temsil eder. Tarot'un baba figürüdür, liderliği ve kontrolü temsil eder.",
         "symbolism": "He sits on a throne decorated with ram heads, representing his astrological association with Aries. The mountains behind him represent his solid foundation.",
-        "yes_no_meaning": "Yes - take control and lead with authority."
+        "symbolism_tr": "Koç başlarıyla süslenmiş bir taht üzerinde oturur, Koç burcuyla olan astrolojik bağlantısını temsil eder. Arkasındaki dağlar sağlam temelini temsil eder.",
+        "yes_no_meaning": "Yes - take control and lead with authority.",
+        "yes_no_meaning_tr": "Evet - kontrolü alın ve otoriteyle liderlik edin."
     },
     {
         "id": 5,
         "name": "The Hierophant",
+        "name_tr": "Aziz",
         "image_url": "/assets/cards/hierophant.jpg",
         "keywords": ["spiritual wisdom", "religious beliefs", "conformity", "tradition"],
+        "keywords_tr": ["ruhsal bilgelik", "dini inançlar", "uyum", "gelenek"],
         "meaning_upright": "Spiritual wisdom, religious beliefs, conformity, tradition, institutions, group identification, conventional wisdom.",
+        "meaning_upright_tr": "Ruhsal bilgelik, dini inançlar, uyum, gelenek, kurumlar, grup kimliği, geleneksel bilgelik.",
         "meaning_reversed": "Personal beliefs, freedom, challenging the status quo, unconventional methods, ignorance, restriction.",
+        "meaning_reversed_tr": "Kişisel inançlar, özgürlük, statükoyu sorgulama, alışılmamış yöntemler, cehalet, kısıtlama.",
         "description": "The Hierophant represents spiritual wisdom, religious beliefs, and tradition. He is a bridge between heaven and earth.",
+        "description_tr": "Aziz ruhsal bilgeliği, dini inançları ve geleneği temsil eder. Cennet ile dünya arasında bir köprüdür.",
         "symbolism": "He holds keys representing the conscious and subconscious minds. Two acolytes kneel before him, representing the transmission of sacred knowledge.",
-        "yes_no_meaning": "Yes - follow traditional wisdom and established methods."
+        "symbolism_tr": "Bilinçli ve bilinçsiz aklı temsil eden anahtarları tutar. İki yardımcı önünde diz çökmüş, kutsal bilginin aktarımını temsil eder.",
+        "yes_no_meaning": "Yes - follow traditional wisdom and established methods.",
+        "yes_no_meaning_tr": "Evet - geleneksel bilgeliği ve yerleşik yöntemleri takip edin."
     },
     {
         "id": 6,
