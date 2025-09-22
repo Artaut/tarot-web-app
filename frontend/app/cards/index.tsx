@@ -61,7 +61,7 @@ export default function CardsListScreen() {
 
   const fetchCards = async () => {
     try {
-      const response = await fetch(`${BACKEND_URL}/api/cards`);
+      const response = await fetch(`${BACKEND_URL}/api/cards?language=${language}`);
       if (!response.ok) {
         throw new Error('Failed to fetch cards');
       }
