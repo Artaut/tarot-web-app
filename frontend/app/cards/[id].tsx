@@ -218,6 +218,25 @@ const styles = StyleSheet.create({
   background: {
     flex: 1,
   },
+  languageContainer: {
+    alignItems: 'flex-end',
+    paddingHorizontal: 20,
+    paddingTop: 10,
+  },
+  languageButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255,255,255,0.1)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+  },
+  languageText: {
+    color: 'white',
+    fontSize: 14,
+    fontWeight: '600',
+    marginLeft: 6,
+  },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
