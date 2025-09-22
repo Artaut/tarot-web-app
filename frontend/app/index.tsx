@@ -9,7 +9,6 @@ import {
   StatusBar,
   Dimensions 
 } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 
