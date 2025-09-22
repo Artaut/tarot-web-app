@@ -58,10 +58,6 @@ const readingTypes = [
 ];
 
 export default function HomeScreen() {
-  const handlePress = (name: string) => {
-    Alert.alert('Coming Soon!', `${name} feature will be available soon!`);
-  };
-
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#0a0a0a" />
@@ -82,7 +78,7 @@ export default function HomeScreen() {
               <TouchableOpacity
                 key={reading.id}
                 style={[styles.readingCard, { backgroundColor: reading.color }]}
-                onPress={() => handlePress(reading.name)}
+                onPress={() => router.push(`/reading/${reading.id}`)}
                 activeOpacity={0.7}
               >
                 <View style={styles.readingCardContent}>
@@ -116,7 +112,7 @@ export default function HomeScreen() {
             
             <TouchableOpacity
               style={[styles.featureCard, { backgroundColor: '#5D4037' }]}
-              onPress={() => handlePress('Card Meanings')}
+              onPress={() => router.push('/cards')}
               activeOpacity={0.7}
             >
               <Ionicons name="library" size={28} color="#FFAB91" />
@@ -129,7 +125,7 @@ export default function HomeScreen() {
 
             <TouchableOpacity
               style={[styles.featureCard, { backgroundColor: '#3F51B5' }]}
-              onPress={() => handlePress('Tarot Quiz Game')}
+              onPress={() => router.push('/quiz')}
               activeOpacity={0.7}
             >
               <Ionicons name="school" size={28} color="#8C9EFF" />
