@@ -46,8 +46,14 @@ interface TarotCard {
 export default function CardsListScreen() {
   const [cards, setCards] = useState<TarotCard[]>([]);
   const [loading, setLoading] = useState(true);
+  const [language, setLanguage] = useState('tr'); // Varsayılan Türkçe
+  const t = translations[language];
 
   const BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL;
+
+  const toggleLanguage = () => {
+    setLanguage(language === 'en' ? 'tr' : 'en');
+  };
 
   useEffect(() => {
     fetchCards();
@@ -63,7 +69,7 @@ export default function CardsListScreen() {
       setCards(cardsData);
     } catch (error) {
       console.error('Error fetching cards:', error);
-      Alert.alert('Error', 'Failed to load tarot cards. Please try again.');
+      Alert.alert(t.error, t.errorMessage);
     } finally {
       setLoading(false);
     }
@@ -115,7 +121,7 @@ export default function CardsListScreen() {
         <LinearGradient colors={['#0a0a0a', '#1a1a2e', '#16213e']} style={styles.background}>
           <View style={styles.loadingContainer}>
             <ActivityIndicator size="large" color="#7C4DFF" />
-            <Text style={styles.loadingText}>Loading Major Arcana Cards...</Text>
+            <Text style={styles.loadingText}>{t.loading}</Text>
           </View>
         </LinearGradient>
       </SafeAreaView>
@@ -125,9 +131,23 @@ export default function CardsListScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <LinearGradient colors={['#0a0a0a', '#1a1a2e', '#16213e']} style={styles.background}>
+        {/* Language Toggle Button */}
+        <View style={styles.languageContainer}>
+          <TouchableOpacity 
+            style={styles.languageButton}
+            onPress={toggleLanguage}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="language" size={20} color="white" />
+            <Text style={styles.languageText}>
+              {language === 'en' ? 'TR' : 'EN'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+
         <View style={styles.header}>
-          <Text style={styles.title}>Major Arcana</Text>
-          <Text style={styles.subtitle}>The 22 cards representing life's major themes and lessons</Text>
+          <Text style={styles.title}>{t.title}</Text>
+          <Text style={styles.subtitle}>{t.subtitle}</Text>
         </View>
         
         <FlatList
