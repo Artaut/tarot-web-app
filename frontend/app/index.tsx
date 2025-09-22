@@ -14,69 +14,65 @@ import { router } from 'expo-router';
 
 const { width, height } = Dimensions.get('window');
 
-interface ReadingType {
-  id: string;
-  name: string;
-  description: string;
-  icon: keyof typeof Ionicons.glyphMap;
-  cardCount: number;
-  color: string[];
-}
+import React from 'react';
+import { 
+  View, 
+  Text, 
+  StyleSheet, 
+  ScrollView, 
+  TouchableOpacity, 
+  SafeAreaView,
+  StatusBar,
+  Alert
+} from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
-const readingTypes: ReadingType[] = [
+const readingTypes = [
   {
     id: 'card_of_day',
     name: 'Card of the Day',
     description: 'The simplest Tarot in which you choose the card that will mark your day.',
-    icon: 'sunny-outline',
+    icon: 'sunny-outline' as keyof typeof Ionicons.glyphMap,
     cardCount: 1,
-    color: ['#FF6B35', '#F7931E']
+    color: '#FF6B35'
   },
   {
     id: 'classic_tarot',
     name: 'Classic Tarot',
     description: 'A three-card spread that will give you the forecast for today and also offer you some advice on health.',
-    icon: 'library-outline',
+    icon: 'library-outline' as keyof typeof Ionicons.glyphMap,
     cardCount: 3,
-    color: ['#4C63D2', '#7C4DFF']
+    color: '#4C63D2'
   },
   {
     id: 'path_of_day',
     name: 'The Path of the Day',
     description: 'Four-card spread to guess work, money and love for today.',
-    icon: 'compass-outline',
+    icon: 'compass-outline' as keyof typeof Ionicons.glyphMap,
     cardCount: 4,
-    color: ['#00C851', '#00695C']
+    color: '#00C851'
   },
   {
     id: 'couples_tarot',
     name: 'The Tarot of the Couples',
     description: 'This love Tarot predicts the future of any couple and offers advice on how to improve their relationship.',
-    icon: 'heart-outline',
+    icon: 'heart-outline' as keyof typeof Ionicons.glyphMap,
     cardCount: 5,
-    color: ['#E91E63', '#AD1457']
+    color: '#E91E63'
   },
   {
     id: 'yes_no',
     name: 'Yes or No',
     description: 'Ask the Tarot a question for a direct and reasoned answer.',
-    icon: 'help-circle-outline',
+    icon: 'help-circle-outline' as keyof typeof Ionicons.glyphMap,
     cardCount: 1,
-    color: ['#9C27B0', '#6A1B9A']
+    color: '#9C27B0'
   }
 ];
 
 export default function HomeScreen() {
-  const handleReadingPress = (readingType: ReadingType) => {
-    router.push(`/reading/${readingType.id}`);
-  };
-
-  const handleQuizPress = () => {
-    router.push('/quiz');
-  };
-
-  const handleCardsPress = () => {
-    router.push('/cards');
+  const handlePress = (name: string) => {
+    Alert.alert('Coming Soon!', `${name} feature will be available soon!`);
   };
 
   return (
@@ -98,8 +94,8 @@ export default function HomeScreen() {
             {readingTypes.map((reading, index) => (
               <TouchableOpacity
                 key={reading.id}
-                style={[styles.readingCard, { backgroundColor: reading.color[0] }]}
-                onPress={() => handleReadingPress(reading)}
+                style={[styles.readingCard, { backgroundColor: reading.color }]}
+                onPress={() => handlePress(reading.name)}
                 activeOpacity={0.7}
               >
                 <View style={styles.readingCardContent}>
@@ -133,7 +129,7 @@ export default function HomeScreen() {
             
             <TouchableOpacity
               style={[styles.featureCard, { backgroundColor: '#5D4037' }]}
-              onPress={handleCardsPress}
+              onPress={() => handlePress('Card Meanings')}
               activeOpacity={0.7}
             >
               <Ionicons name="library" size={28} color="#FFAB91" />
@@ -146,7 +142,7 @@ export default function HomeScreen() {
 
             <TouchableOpacity
               style={[styles.featureCard, { backgroundColor: '#3F51B5' }]}
-              onPress={handleQuizPress}
+              onPress={() => handlePress('Tarot Quiz Game')}
               activeOpacity={0.7}
             >
               <Ionicons name="school" size={28} color="#8C9EFF" />
