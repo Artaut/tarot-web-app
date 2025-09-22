@@ -83,10 +83,7 @@ export default function HomeScreen() {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#0a0a0a" />
       
-      <LinearGradient
-        colors={['#0a0a0a', '#1a1a2e', '#16213e']}
-        style={styles.background}
-      >
+      <View style={styles.background}>
         <ScrollView showsVerticalScrollIndicator={false}>
           {/* Header */}
           <View style={styles.header}>
@@ -101,38 +98,31 @@ export default function HomeScreen() {
             {readingTypes.map((reading, index) => (
               <TouchableOpacity
                 key={reading.id}
-                style={styles.readingCard}
+                style={[styles.readingCard, { backgroundColor: reading.color[0] }]}
                 onPress={() => handleReadingPress(reading)}
                 activeOpacity={0.7}
               >
-                <LinearGradient
-                  colors={reading.color}
-                  style={styles.readingCardGradient}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 1 }}
-                >
-                  <View style={styles.readingCardContent}>
-                    <View style={styles.readingCardHeader}>
-                      <Ionicons 
-                        name={reading.icon} 
-                        size={32} 
-                        color="white" 
-                        style={styles.readingIcon}
-                      />
-                      <View style={styles.cardCountBadge}>
-                        <Text style={styles.cardCountText}>{reading.cardCount}</Text>
-                      </View>
-                    </View>
-                    
-                    <Text style={styles.readingTitle}>{reading.name}</Text>
-                    <Text style={styles.readingDescription}>{reading.description}</Text>
-                    
-                    <View style={styles.readingFooter}>
-                      <Text style={styles.readingAction}>Tap to begin</Text>
-                      <Ionicons name="arrow-forward" size={20} color="rgba(255,255,255,0.8)" />
+                <View style={styles.readingCardContent}>
+                  <View style={styles.readingCardHeader}>
+                    <Ionicons 
+                      name={reading.icon} 
+                      size={32} 
+                      color="white" 
+                      style={styles.readingIcon}
+                    />
+                    <View style={styles.cardCountBadge}>
+                      <Text style={styles.cardCountText}>{reading.cardCount}</Text>
                     </View>
                   </View>
-                </LinearGradient>
+                  
+                  <Text style={styles.readingTitle}>{reading.name}</Text>
+                  <Text style={styles.readingDescription}>{reading.description}</Text>
+                  
+                  <View style={styles.readingFooter}>
+                    <Text style={styles.readingAction}>Tap to begin</Text>
+                    <Ionicons name="arrow-forward" size={20} color="rgba(255,255,255,0.8)" />
+                  </View>
+                </View>
               </TouchableOpacity>
             ))}
           </View>
@@ -142,39 +132,29 @@ export default function HomeScreen() {
             <Text style={styles.sectionTitle}>Learn & Explore</Text>
             
             <TouchableOpacity
-              style={styles.featureCard}
+              style={[styles.featureCard, { backgroundColor: '#5D4037' }]}
               onPress={handleCardsPress}
               activeOpacity={0.7}
             >
-              <LinearGradient
-                colors={['#2C1810', '#5D4037']}
-                style={styles.featureCardGradient}
-              >
-                <Ionicons name="library" size={28} color="#FFAB91" />
-                <View style={styles.featureTextContainer}>
-                  <Text style={styles.featureTitle}>Card Meanings</Text>
-                  <Text style={styles.featureDescription}>Explore the 22 Major Arcana cards and their meanings</Text>
-                </View>
-                <Ionicons name="chevron-forward" size={24} color="rgba(255,255,255,0.6)" />
-              </LinearGradient>
+              <Ionicons name="library" size={28} color="#FFAB91" />
+              <View style={styles.featureTextContainer}>
+                <Text style={styles.featureTitle}>Card Meanings</Text>
+                <Text style={styles.featureDescription}>Explore the 22 Major Arcana cards and their meanings</Text>
+              </View>
+              <Ionicons name="chevron-forward" size={24} color="rgba(255,255,255,0.6)" />
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={styles.featureCard}
+              style={[styles.featureCard, { backgroundColor: '#3F51B5' }]}
               onPress={handleQuizPress}
               activeOpacity={0.7}
             >
-              <LinearGradient
-                colors={['#1A237E', '#3F51B5']}
-                style={styles.featureCardGradient}
-              >
-                <Ionicons name="school" size={28} color="#8C9EFF" />
-                <View style={styles.featureTextContainer}>
-                  <Text style={styles.featureTitle}>Tarot Quiz Game</Text>
-                  <Text style={styles.featureDescription}>Test your knowledge with 198 questions across 3 levels</Text>
-                </View>
-                <Ionicons name="chevron-forward" size={24} color="rgba(255,255,255,0.6)" />
-              </LinearGradient>
+              <Ionicons name="school" size={28} color="#8C9EFF" />
+              <View style={styles.featureTextContainer}>
+                <Text style={styles.featureTitle}>Tarot Quiz Game</Text>
+                <Text style={styles.featureDescription}>Test your knowledge with 198 questions across 3 levels</Text>
+              </View>
+              <Ionicons name="chevron-forward" size={24} color="rgba(255,255,255,0.6)" />
             </TouchableOpacity>
           </View>
 
@@ -185,7 +165,7 @@ export default function HomeScreen() {
             </Text>
           </View>
         </ScrollView>
-      </LinearGradient>
+      </View>
     </SafeAreaView>
   );
 }
