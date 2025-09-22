@@ -142,21 +142,42 @@ const readingTypes = [
 ];
 
 export default function HomeScreen() {
+  const [language, setLanguage] = useState('tr'); // Varsayılan Türkçe
+  const t = translations[language];
+
+  const toggleLanguage = () => {
+    setLanguage(language === 'en' ? 'tr' : 'en');
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#0a0a0a" />
       
       <View style={styles.background}>
         <ScrollView showsVerticalScrollIndicator={false}>
+          {/* Language Toggle Button */}
+          <View style={styles.languageContainer}>
+            <TouchableOpacity 
+              style={styles.languageButton}
+              onPress={toggleLanguage}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="language" size={20} color="white" />
+              <Text style={styles.languageText}>
+                {language === 'en' ? 'TR' : 'EN'}
+              </Text>
+            </TouchableOpacity>
+          </View>
+
           {/* Header */}
           <View style={styles.header}>
-            <Text style={styles.title}>Daily Tarot</Text>
-            <Text style={styles.subtitle}>Discover your destiny through the ancient wisdom of tarot</Text>
+            <Text style={styles.title}>{t.title}</Text>
+            <Text style={styles.subtitle}>{t.subtitle}</Text>
           </View>
 
           {/* Reading Types */}
           <View style={styles.readingsContainer}>
-            <Text style={styles.sectionTitle}>Choose Your Reading</Text>
+            <Text style={styles.sectionTitle}>{t.chooseReading}</Text>
             
             {readingTypes.map((reading, index) => (
               <TouchableOpacity
@@ -178,11 +199,15 @@ export default function HomeScreen() {
                     </View>
                   </View>
                   
-                  <Text style={styles.readingTitle}>{reading.name}</Text>
-                  <Text style={styles.readingDescription}>{reading.description}</Text>
+                  <Text style={styles.readingTitle}>
+                    {t.readings[reading.id].name}
+                  </Text>
+                  <Text style={styles.readingDescription}>
+                    {t.readings[reading.id].description}
+                  </Text>
                   
                   <View style={styles.readingFooter}>
-                    <Text style={styles.readingAction}>Tap to begin</Text>
+                    <Text style={styles.readingAction}>{t.tapToBegin}</Text>
                     <Ionicons name="arrow-forward" size={20} color="rgba(255,255,255,0.8)" />
                   </View>
                 </View>
@@ -192,7 +217,7 @@ export default function HomeScreen() {
 
           {/* Additional Features */}
           <View style={styles.featuresContainer}>
-            <Text style={styles.sectionTitle}>Learn & Explore</Text>
+            <Text style={styles.sectionTitle}>{t.learnExplore}</Text>
             
             <TouchableOpacity
               style={[styles.featureCard, { backgroundColor: '#5D4037' }]}
@@ -201,8 +226,8 @@ export default function HomeScreen() {
             >
               <Ionicons name="library" size={28} color="#FFAB91" />
               <View style={styles.featureTextContainer}>
-                <Text style={styles.featureTitle}>Card Meanings</Text>
-                <Text style={styles.featureDescription}>Explore the 22 Major Arcana cards and their meanings</Text>
+                <Text style={styles.featureTitle}>{t.features.cardMeanings.title}</Text>
+                <Text style={styles.featureDescription}>{t.features.cardMeanings.description}</Text>
               </View>
               <Ionicons name="chevron-forward" size={24} color="rgba(255,255,255,0.6)" />
             </TouchableOpacity>
@@ -214,8 +239,8 @@ export default function HomeScreen() {
             >
               <Ionicons name="school" size={28} color="#8C9EFF" />
               <View style={styles.featureTextContainer}>
-                <Text style={styles.featureTitle}>Tarot Quiz Game</Text>
-                <Text style={styles.featureDescription}>Test your knowledge with 198 questions across 3 levels</Text>
+                <Text style={styles.featureTitle}>{t.features.quiz.title}</Text>
+                <Text style={styles.featureDescription}>{t.features.quiz.description}</Text>
               </View>
               <Ionicons name="chevron-forward" size={24} color="rgba(255,255,255,0.6)" />
             </TouchableOpacity>
@@ -224,7 +249,7 @@ export default function HomeScreen() {
           {/* Footer */}
           <View style={styles.footer}>
             <Text style={styles.footerText}>
-              Anticipate your future with the wisdom of the ancient Tarot
+              {t.footerText}
             </Text>
           </View>
         </ScrollView>
