@@ -99,7 +99,7 @@ export default function CardDetailScreen() {
         <LinearGradient colors={['#0a0a0a', '#1a1a2e', '#16213e']} style={styles.background}>
           <View style={styles.loadingContainer}>
             <ActivityIndicator size="large" color="#7C4DFF" />
-            <Text style={styles.loadingText}>Loading card details...</Text>
+            <Text style={styles.loadingText}>{t.loading}</Text>
           </View>
         </LinearGradient>
       </SafeAreaView>
@@ -112,7 +112,7 @@ export default function CardDetailScreen() {
         <LinearGradient colors={['#0a0a0a', '#1a1a2e', '#16213e']} style={styles.background}>
           <View style={styles.errorContainer}>
             <Ionicons name="alert-circle" size={64} color="#FF6B6B" />
-            <Text style={styles.errorText}>Card not found</Text>
+            <Text style={styles.errorText}>{t.cardNotFound}</Text>
           </View>
         </LinearGradient>
       </SafeAreaView>
@@ -123,6 +123,20 @@ export default function CardDetailScreen() {
     <SafeAreaView style={styles.container}>
       <LinearGradient colors={['#0a0a0a', '#1a1a2e', '#16213e']} style={styles.background}>
         <ScrollView showsVerticalScrollIndicator={false}>
+          {/* Language Toggle Button */}
+          <View style={styles.languageContainer}>
+            <TouchableOpacity 
+              style={styles.languageButton}
+              onPress={toggleLanguage}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="language" size={20} color="white" />
+              <Text style={styles.languageText}>
+                {language === 'en' ? 'TR' : 'EN'}
+              </Text>
+            </TouchableOpacity>
+          </View>
+
           {/* Card Visual */}
           <View style={styles.cardDisplay}>
             <View style={styles.card}>
@@ -142,7 +156,7 @@ export default function CardDetailScreen() {
             
             {/* Keywords */}
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Keywords</Text>
+              <Text style={styles.sectionTitle}>{t.keywords}</Text>
               <View style={styles.keywordsContainer}>
                 {card.keywords.map((keyword, index) => (
                   <View key={index} style={styles.keywordBadge}>
@@ -154,7 +168,7 @@ export default function CardDetailScreen() {
 
             {/* Description */}
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Description</Text>
+              <Text style={styles.sectionTitle}>{t.description}</Text>
               <Text style={styles.sectionText}>{card.description}</Text>
             </View>
 
@@ -162,7 +176,7 @@ export default function CardDetailScreen() {
             <View style={styles.section}>
               <View style={styles.meaningHeader}>
                 <Ionicons name="arrow-up" size={20} color="#4CAF50" />
-                <Text style={[styles.sectionTitle, { color: '#4CAF50' }]}>Upright Meaning</Text>
+                <Text style={[styles.sectionTitle, { color: '#4CAF50' }]}>{t.uprightMeaning}</Text>
               </View>
               <Text style={styles.sectionText}>{card.meaning_upright}</Text>
             </View>
@@ -171,20 +185,20 @@ export default function CardDetailScreen() {
             <View style={styles.section}>
               <View style={styles.meaningHeader}>
                 <Ionicons name="arrow-down" size={20} color="#FF6B6B" />
-                <Text style={[styles.sectionTitle, { color: '#FF6B6B' }]}>Reversed Meaning</Text>
+                <Text style={[styles.sectionTitle, { color: '#FF6B6B' }]}>{t.reversedMeaning}</Text>
               </View>
               <Text style={styles.sectionText}>{card.meaning_reversed}</Text>
             </View>
 
             {/* Symbolism */}
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Symbolism</Text>
+              <Text style={styles.sectionTitle}>{t.symbolism}</Text>
               <Text style={styles.sectionText}>{card.symbolism}</Text>
             </View>
 
             {/* Yes/No Meaning */}
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Yes/No Reading</Text>
+              <Text style={styles.sectionTitle}>{t.yesNoReading}</Text>
               <View style={styles.yesNoContainer}>
                 <Text style={styles.sectionText}>{card.yes_no_meaning}</Text>
               </View>
