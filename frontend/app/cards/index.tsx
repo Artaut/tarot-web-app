@@ -57,7 +57,7 @@ export default function CardsListScreen() {
 
   useEffect(() => {
     fetchCards();
-  }, []);
+  }, [language]); // language değiştiğinde kartları yeniden yükle
 
   const fetchCards = async () => {
     try {
