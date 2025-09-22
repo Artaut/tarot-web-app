@@ -7,25 +7,13 @@ import {
   TouchableOpacity, 
   SafeAreaView,
   StatusBar,
-  Dimensions 
+  Alert,
+  Dimensions
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 
 const { width, height } = Dimensions.get('window');
-
-import React from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  ScrollView, 
-  TouchableOpacity, 
-  SafeAreaView,
-  StatusBar,
-  Alert
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 
 const readingTypes = [
   {
