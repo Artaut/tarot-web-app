@@ -1,0 +1,277 @@
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  SafeAreaView,
+  ActivityIndicator,
+  Alert,
+  Dimensions,
+} from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
+import { useLocalSearchParams } from 'expo-router';
+
+const { width } = Dimensions.get('window');
+const CARD_WIDTH = width * 0.4;
+const CARD_HEIGHT = CARD_WIDTH * 1.5;
+
+interface TarotCard {
+  id: number;
+  name: string;
+  image_url: string;
+  keywords: string[];
+  meaning_upright: string;
+  meaning_reversed: string;
+  description: string;
+  symbolism: string;
+  yes_no_meaning: string;
+}
+
+export default function CardDetailScreen() {
+  const { id } = useLocalSearchParams<{ id: string }>();
+  const [card, setCard] = useState<TarotCard | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  const BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL;
+
+  useEffect(() => {
+    if (id) {
+      fetchCard();
+    }
+  }, [id]);
+
+  const fetchCard = async () => {
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/cards/${id}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch card');
+      }
+      const cardData = await response.json();
+      setCard(cardData);
+    } catch (error) {
+      console.error('Error fetching card:', error);
+      Alert.alert('Error', 'Failed to load card details. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <LinearGradient colors={['#0a0a0a', '#1a1a2e', '#16213e']} style={styles.background}>
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="#7C4DFF" />
+            <Text style={styles.loadingText}>Loading card details...</Text>
+          </View>
+        </LinearGradient>
+      </SafeAreaView>
+    );
+  }
+
+  if (!card) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <LinearGradient colors={['#0a0a0a', '#1a1a2e', '#16213e']} style={styles.background}>
+          <View style={styles.errorContainer}>
+            <Ionicons name="alert-circle" size={64} color="#FF6B6B" />
+            <Text style={styles.errorText}>Card not found</Text>
+          </View>
+        </LinearGradient>
+      </SafeAreaView>
+    );
+  }
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <LinearGradient colors={['#0a0a0a', '#1a1a2e', '#16213e']} style={styles.background}>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          {/* Card Visual */}
+          <View style={styles.cardDisplay}>
+            <View style={styles.card}>
+              <LinearGradient
+                colors={['#2D1B69', '#1A1A2E']}
+                style={styles.cardGradient}
+              >
+                <Text style={styles.cardNumber}>{card.id}</Text>
+                <Text style={styles.cardNameOnCard}>{card.name}</Text>
+              </LinearGradient>
+            </View>
+          </View>
+
+          {/* Card Information */}
+          <View style={styles.content}>
+            <Text style={styles.cardTitle}>{card.name}</Text>
+            
+            {/* Keywords */}
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Keywords</Text>
+              <View style={styles.keywordsContainer}>
+                {card.keywords.map((keyword, index) => (
+                  <View key={index} style={styles.keywordBadge}>
+                    <Text style={styles.keywordText}>{keyword}</Text>
+                  </View>
+                ))}
+              </View>
+            </View>
+
+            {/* Description */}
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Description</Text>
+              <Text style={styles.sectionText}>{card.description}</Text>
+            </View>
+
+            {/* Upright Meaning */}
+            <View style={styles.section}>
+              <View style={styles.meaningHeader}>
+                <Ionicons name="arrow-up" size={20} color="#4CAF50" />
+                <Text style={[styles.sectionTitle, { color: '#4CAF50' }]}>Upright Meaning</Text>
+              </View>
+              <Text style={styles.sectionText}>{card.meaning_upright}</Text>
+            </View>
+
+            {/* Reversed Meaning */}
+            <View style={styles.section}>
+              <View style={styles.meaningHeader}>
+                <Ionicons name="arrow-down" size={20} color="#FF6B6B" />
+                <Text style={[styles.sectionTitle, { color: '#FF6B6B' }]}>Reversed Meaning</Text>
+              </View>
+              <Text style={styles.sectionText}>{card.meaning_reversed}</Text>
+            </View>
+
+            {/* Symbolism */}
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Symbolism</Text>
+              <Text style={styles.sectionText}>{card.symbolism}</Text>
+            </View>
+
+            {/* Yes/No Meaning */}
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Yes/No Reading</Text>
+              <View style={styles.yesNoContainer}>
+                <Text style={styles.sectionText}>{card.yes_no_meaning}</Text>
+              </View>
+            </View>
+          </View>
+        </ScrollView>
+      </LinearGradient>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#0a0a0a',
+  },
+  background: {
+    flex: 1,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    color: 'rgba(255,255,255,0.7)',
+    fontSize: 16,
+    marginTop: 16,
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  errorText: {
+    color: '#FF6B6B',
+    fontSize: 18,
+    marginTop: 16,
+    textAlign: 'center',
+  },
+  cardDisplay: {
+    alignItems: 'center',
+    paddingVertical: 30,
+  },
+  card: {
+    width: CARD_WIDTH,
+    height: CARD_HEIGHT,
+    borderRadius: 16,
+    overflow: 'hidden',
+    elevation: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.4,
+    shadowRadius: 12,
+  },
+  cardGradient: {
+    flex: 1,
+    padding: 16,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  cardNumber: {
+    fontSize: 24,
+    color: 'rgba(255,255,255,0.7)',
+    fontWeight: 'bold',
+  },
+  cardNameOnCard: {
+    fontSize: 16,
+    color: 'white',
+    textAlign: 'center',
+    fontWeight: '600',
+    lineHeight: 20,
+  },
+  content: {
+    padding: 20,
+  },
+  cardTitle: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    textAlign: 'center',
+    marginBottom: 30,
+  },
+  section: {
+    marginBottom: 24,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#FFFFFF',
+    marginBottom: 12,
+  },
+  sectionText: {
+    fontSize: 16,
+    color: 'rgba(255,255,255,0.9)',
+    lineHeight: 24,
+  },
+  keywordsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  keywordBadge: {
+    backgroundColor: 'rgba(124, 77, 255, 0.2)',
+    borderRadius: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    marginRight: 8,
+    marginBottom: 8,
+  },
+  keywordText: {
+    color: '#9C88FF',
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  meaningHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  yesNoContainer: {
+    backgroundColor: 'rgba(255,255,255,0.05)',
+    borderRadius: 12,
+    padding: 16,
+  },
+});
