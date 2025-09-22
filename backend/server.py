@@ -826,57 +826,97 @@ async def get_readings(limit: int = 10):
     readings = await db.readings.find().sort("timestamp", -1).limit(limit).to_list(limit)
     return [TarotReading(**reading) for reading in readings]
 
-def generate_interpretation(reading_type: str, cards: List[Dict], question: Optional[str] = None) -> str:
-    """Generate interpretation based on reading type and cards"""
+def generate_interpretation(reading_type: str, cards: List[Dict], question: Optional[str] = None, language: str = "en") -> str:
+    """Generate interpretation based on reading type and cards with language support"""
     interpretation = ""
     
     if reading_type == "card_of_day":
         card = cards[0]["card"]
         reversed = cards[0]["reversed"]
         meaning = card["meaning_reversed"] if reversed else card["meaning_upright"]
-        interpretation = f"Your card for today is {card['name']}{'(Reversed)' if reversed else ''}.\n\n{meaning}\n\nThis card suggests that today you should focus on {', '.join(card['keywords'][:2])}. {card['description']}"
+        
+        if language == "tr":
+            interpretation = f"Bugünün kartınız {card['name']}{'(Ters)' if reversed else ''}.\n\n{meaning}\n\nBu kart bugün {', '.join(card['keywords'][:2])} konularına odaklanmanız gerektiğini önerir. {card['description']}"
+        else:
+            interpretation = f"Your card for today is {card['name']}{'(Reversed)' if reversed else ''}.\n\n{meaning}\n\nThis card suggests that today you should focus on {', '.join(card['keywords'][:2])}. {card['description']}"
     
     elif reading_type == "classic_tarot":
-        interpretation = "**Classic Three-Card Reading**\n\n"
+        if language == "tr":
+            interpretation = "**Klasik Üç Kart Falı**\n\n"
+        else:
+            interpretation = "**Classic Three-Card Reading**\n\n"
+            
         for i, card_data in enumerate(cards):
             card = card_data["card"]
             position = card_data["position"]
             reversed = card_data["reversed"]
             meaning = card["meaning_reversed"] if reversed else card["meaning_upright"]
-            interpretation += f"**{position}: {card['name']}{'(Reversed)' if reversed else ''}**\n{meaning}\n\n"
-        interpretation += "**Health Advice**: Focus on balance and listen to your body's needs. The cards suggest paying attention to both physical and emotional well-being."
+            interpretation += f"**{position}: {card['name']}{'(Ters)' if reversed and language == 'tr' else '(Reversed)' if reversed else ''}**\n{meaning}\n\n"
+        
+        if language == "tr":
+            interpretation += "**Sağlık Önerisi**: Dengeye odaklanın ve vücudunuzun ihtiyaçlarını dinleyin. Kartlar hem fiziksel hem de duygusal sağlığa dikkat etmenizi öneriyor."
+        else:
+            interpretation += "**Health Advice**: Focus on balance and listen to your body's needs. The cards suggest paying attention to both physical and emotional well-being."
     
     elif reading_type == "path_of_day":
-        interpretation = "**Path of the Day - Four Areas Reading**\n\n"
-        advice_areas = ["work environment", "financial decisions", "romantic connections", "overall life direction"]
+        if language == "tr":
+            interpretation = "**Günün Yolu - Dört Alan Falı**\n\n"
+            advice_areas = ["iş ortamına", "finansal kararlara", "romantik bağlantılara", "genel yaşam yönüne"]
+        else:
+            interpretation = "**Path of the Day - Four Areas Reading**\n\n"
+            advice_areas = ["work environment", "financial decisions", "romantic connections", "overall life direction"]
+            
         for i, card_data in enumerate(cards):
             card = card_data["card"]
             position = card_data["position"]
             reversed = card_data["reversed"]
             meaning = card["meaning_reversed"] if reversed else card["meaning_upright"]
-            interpretation += f"**{position}: {card['name']}{'(Reversed)' if reversed else ''}**\n{meaning}\nFocus on {advice_areas[i]} today.\n\n"
+            interpretation += f"**{position}: {card['name']}{'(Ters)' if reversed and language == 'tr' else '(Reversed)' if reversed else ''}**\n{meaning}\n"
+            if language == "tr":
+                interpretation += f"Bugün {advice_areas[i]} odaklanın.\n\n"
+            else:
+                interpretation += f"Focus on {advice_areas[i]} today.\n\n"
     
     elif reading_type == "couples_tarot":
-        interpretation = "**Couples Tarot Reading**\n\n"
-        relationship_aspects = [
-            "your emotional state in the relationship",
-            "your partner's perspective and feelings", 
-            "the current dynamic between you both",
-            "obstacles that need attention",
-            "the potential future of your relationship"
-        ]
+        if language == "tr":
+            interpretation = "**Çiftler Tarot Falı**\n\n"
+            relationship_aspects = [
+                "ilişkideki duygusal durumunuz",
+                "partnerinizin perspektifi ve hisleri", 
+                "ikiniz arasındaki mevcut dinamik",
+                "dikkat gerektiren engeller",
+                "ilişkinizin potansiyel geleceği"
+            ]
+        else:
+            interpretation = "**Couples Tarot Reading**\n\n"
+            relationship_aspects = [
+                "your emotional state in the relationship",
+                "your partner's perspective and feelings", 
+                "the current dynamic between you both",
+                "obstacles that need attention",
+                "the potential future of your relationship"
+            ]
+            
         for i, card_data in enumerate(cards):
             card = card_data["card"]
             position = card_data["position"]
             reversed = card_data["reversed"]
             meaning = card["meaning_reversed"] if reversed else card["meaning_upright"]
-            interpretation += f"**{position}: {card['name']}{'(Reversed)' if reversed else ''}**\n{meaning}\nThis relates to {relationship_aspects[i]}.\n\n"
+            interpretation += f"**{position}: {card['name']}{'(Ters)' if reversed and language == 'tr' else '(Reversed)' if reversed else ''}**\n{meaning}\n"
+            if language == "tr":
+                interpretation += f"Bu {relationship_aspects[i]} ile ilgilidir.\n\n"
+            else:
+                interpretation += f"This relates to {relationship_aspects[i]}.\n\n"
     
     elif reading_type == "yes_no":
         card = cards[0]["card"]
         reversed = cards[0]["reversed"]
-        yes_no_answer = "No" if reversed else card["yes_no_meaning"]
-        interpretation = f"**Question**: {question or 'Your question'}\n\n**Answer**: {yes_no_answer}\n\n**Card**: {card['name']}{'(Reversed)' if reversed else ''}\n\n**Reasoning**: {card['meaning_reversed'] if reversed else card['meaning_upright']}"
+        yes_no_answer = "Hayır" if reversed and language == "tr" else "No" if reversed else card["yes_no_meaning"]
+        
+        if language == "tr":
+            interpretation = f"**Soru**: {question or 'Sorunuz'}\n\n**Cevap**: {yes_no_answer}\n\n**Kart**: {card['name']}{'(Ters)' if reversed else ''}\n\n**Gerekçe**: {card['meaning_reversed'] if reversed else card['meaning_upright']}"
+        else:
+            interpretation = f"**Question**: {question or 'Your question'}\n\n**Answer**: {yes_no_answer}\n\n**Card**: {card['name']}{'(Reversed)' if reversed else ''}\n\n**Reasoning**: {card['meaning_reversed'] if reversed else card['meaning_upright']}"
     
     return interpretation
 
