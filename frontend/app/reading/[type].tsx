@@ -20,6 +20,82 @@ const { width, height } = Dimensions.get('window');
 const CARD_WIDTH = width * 0.25;
 const CARD_HEIGHT = CARD_WIDTH * 1.5;
 
+// Dil desteği
+const translations = {
+  en: {
+    questionRequired: "Question Required",
+    questionRequiredMessage: "Please enter your question for the tarot reading.",
+    error: "Error",
+    errorMessage: "Failed to get your tarot reading. Please try again.",
+    askQuestion: "Ask your question:",
+    questionPlaceholder: "What would you like to know?",
+    beginReading: "Begin Reading",
+    yourReading: "Your {readingName}",
+    interpretation: "Interpretation",
+    newReading: "New Reading",
+    reversed: "Reversed",
+    readingNotFound: "Reading type not found",
+    readings: {
+      card_of_day: {
+        name: "Card of the Day",
+        description: "The simplest Tarot in which you choose the card that will mark your day."
+      },
+      classic_tarot: {
+        name: "Classic Tarot", 
+        description: "A three-card spread that will give you the forecast for today and also offer you some advice on health."
+      },
+      path_of_day: {
+        name: "The Path of the Day",
+        description: "Four-card spread to guess work, money and love for today."
+      },
+      couples_tarot: {
+        name: "The Tarot of the Couples",
+        description: "This love Tarot predicts the future of any couple and offers advice on how to improve their relationship."
+      },
+      yes_no: {
+        name: "Yes or No",
+        description: "Ask the Tarot a question for a direct and reasoned answer."
+      }
+    }
+  },
+  tr: {
+    questionRequired: "Soru Gerekli",
+    questionRequiredMessage: "Lütfen tarot falı için sorunuzu girin.",
+    error: "Hata",
+    errorMessage: "Tarot falınız alınamadı. Lütfen tekrar deneyin.",
+    askQuestion: "Sorunuzu sorun:",
+    questionPlaceholder: "Ne öğrenmek istiyorsunuz?",
+    beginReading: "Falı Başlat",
+    yourReading: "{readingName} Falınız",
+    interpretation: "Yorum",
+    newReading: "Yeni Fal",
+    reversed: "Ters",
+    readingNotFound: "Fal türü bulunamadı",
+    readings: {
+      card_of_day: {
+        name: "Günün Kartı",
+        description: "Gününüzü belirleyecek kartı seçtiğiniz en basit Tarot falı."
+      },
+      classic_tarot: {
+        name: "Klasik Tarot",
+        description: "Bugün için öngörü veren ve sağlık konusunda tavsiye sunan üç kartlı yayılım."
+      },
+      path_of_day: {
+        name: "Günün Yolu",
+        description: "Bugün için iş, para ve aşk konularını tahmin eden dört kartlı yayılım."
+      },
+      couples_tarot: {
+        name: "Çiftler Tarot'u",
+        description: "Bu aşk Tarot'u herhangi bir çiftin geleceğini öngörür ve ilişkilerini geliştirme konusunda tavsiye verir."
+      },
+      yes_no: {
+        name: "Evet ya da Hayır",
+        description: "Tarot'a bir soru sorun ve doğrudan, mantıklı bir cevap alın."
+      }
+    }
+  }
+};
+
 interface TarotCard {
   id: number;
   name: string;
