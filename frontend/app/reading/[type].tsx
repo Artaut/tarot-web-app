@@ -168,7 +168,11 @@ export default function ReadingScreen() {
 
     setLoading(true);
     try {
-      const url = `${BACKEND_URL}/api/reading/${type}${needsQuestion ? `?question=${encodeURIComponent(question)}` : ''}`;
+      let url = `${BACKEND_URL}/api/reading/${type}?language=${language}`;
+      if (needsQuestion) {
+        url += `&question=${encodeURIComponent(question)}`;
+      }
+      
       const response = await fetch(url, {
         method: 'POST',
         headers: {
