@@ -122,42 +122,10 @@ interface TarotReading {
   timestamp: string;
 }
 
-const READING_CONFIGS = {
-  card_of_day: {
-    name: 'Card of the Day',
-    description: 'The simplest Tarot in which you choose the card that will mark your day.',
-    needsQuestion: false,
-    color: ['#FF6B35', '#F7931E']
-  },
-  classic_tarot: {
-    name: 'Classic Tarot',
-    description: 'A three-card spread that will give you the forecast for today and also offer you some advice on health.',
-    needsQuestion: false,
-    color: ['#4C63D2', '#7C4DFF']
-  },
-  path_of_day: {
-    name: 'The Path of the Day',
-    description: 'Four-card spread to guess work, money and love for today.',
-    needsQuestion: false,
-    color: ['#00C851', '#00695C']
-  },
-  couples_tarot: {
-    name: 'The Tarot of the Couples',
-    description: 'This love Tarot predicts the future of any couple and offers advice on how to improve their relationship.',
-    needsQuestion: false,
-    color: ['#E91E63', '#AD1457']
-  },
-  yes_no: {
-    name: 'Yes or No',
-    description: 'Ask the Tarot a question for a direct and reasoned answer.',
-    needsQuestion: true,
-    color: ['#9C27B0', '#6A1B9A']
-  }
-};
-
 export default function ReadingScreen() {
   const { type } = useLocalSearchParams<{ type: string }>();
-  const config = READING_CONFIGS[type as keyof typeof READING_CONFIGS];
+  const [language, setLanguage] = useState('tr'); // Varsayılan Türkçe
+  const t = translations[language];
   
   const [question, setQuestion] = useState('');
   const [reading, setReading] = useState<TarotReading | null>(null);
@@ -166,6 +134,14 @@ export default function ReadingScreen() {
   const [cardAnimations, setCardAnimations] = useState<Animated.Value[]>([]);
 
   const BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL;
+
+  // Okuma türü konfigürasyonu
+  const readingConfig = type ? t.readings[type as keyof typeof t.readings] : null;
+  const needsQuestion = type === 'yes_no';
+
+  const toggleLanguage = () => {
+    setLanguage(language === 'en' ? 'tr' : 'en');
+  };
 
   useEffect(() => {
     if (reading && reading.cards) {
@@ -185,14 +161,14 @@ export default function ReadingScreen() {
   }, [reading]);
 
   const handleStartReading = async () => {
-    if (config.needsQuestion && !question.trim()) {
-      Alert.alert('Question Required', 'Please enter your question for the tarot reading.');
+    if (needsQuestion && !question.trim()) {
+      Alert.alert(t.questionRequired, t.questionRequiredMessage);
       return;
     }
 
     setLoading(true);
     try {
-      const url = `${BACKEND_URL}/api/reading/${type}${config.needsQuestion ? `?question=${encodeURIComponent(question)}` : ''}`;
+      const url = `${BACKEND_URL}/api/reading/${type}${needsQuestion ? `?question=${encodeURIComponent(question)}` : ''}`;
       const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -209,7 +185,7 @@ export default function ReadingScreen() {
       setShowCards(true);
     } catch (error) {
       console.error('Error getting reading:', error);
-      Alert.alert('Error', 'Failed to get your tarot reading. Please try again.');
+      Alert.alert(t.error, t.errorMessage);
     } finally {
       setLoading(false);
     }
@@ -240,7 +216,7 @@ export default function ReadingScreen() {
           >
             <Text style={styles.cardNumber}>{cardData.card.id}</Text>
             <Text style={styles.cardName}>{cardData.card.name}</Text>
-            {cardData.reversed && <Text style={styles.reversedLabel}>Reversed</Text>}
+            {cardData.reversed && <Text style={styles.reversedLabel}>{t.reversed}</Text>}
           </LinearGradient>
         </View>
         <Text style={styles.positionLabel}>{cardData.position}</Text>
@@ -248,10 +224,10 @@ export default function ReadingScreen() {
     );
   };
 
-  if (!config) {
+  if (!readingConfig) {
     return (
       <SafeAreaView style={styles.container}>
-        <Text style={styles.errorText}>Reading type not found</Text>
+        <Text style={styles.errorText}>{t.readingNotFound}</Text>
       </SafeAreaView>
     );
   }
@@ -262,22 +238,36 @@ export default function ReadingScreen() {
         <ScrollView showsVerticalScrollIndicator={false}>
           {!showCards ? (
             <View style={styles.setupContainer}>
+              {/* Language Toggle Button */}
+              <View style={styles.languageContainer}>
+                <TouchableOpacity 
+                  style={styles.languageButton}
+                  onPress={toggleLanguage}
+                  activeOpacity={0.7}
+                >
+                  <Ionicons name="language" size={20} color="white" />
+                  <Text style={styles.languageText}>
+                    {language === 'en' ? 'TR' : 'EN'}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+
               <LinearGradient
-                colors={config.color}
+                colors={['#4C63D2', '#7C4DFF']} // Varsayılan renk
                 style={styles.headerGradient}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
               >
-                <Text style={styles.readingTitle}>{config.name}</Text>
-                <Text style={styles.readingDescription}>{config.description}</Text>
+                <Text style={styles.readingTitle}>{readingConfig.name}</Text>
+                <Text style={styles.readingDescription}>{readingConfig.description}</Text>
               </LinearGradient>
 
-              {config.needsQuestion && (
+              {needsQuestion && (
                 <View style={styles.questionContainer}>
-                  <Text style={styles.questionLabel}>Ask your question:</Text>
+                  <Text style={styles.questionLabel}>{t.askQuestion}</Text>
                   <TextInput
                     style={styles.questionInput}
-                    placeholder="What would you like to know?"
+                    placeholder={t.questionPlaceholder}
                     placeholderTextColor="rgba(255,255,255,0.5)"
                     value={question}
                     onChangeText={setQuestion}
@@ -293,7 +283,7 @@ export default function ReadingScreen() {
                 disabled={loading}
               >
                 <LinearGradient
-                  colors={config.color}
+                  colors={['#4C63D2', '#7C4DFF']} // Varsayılan renk
                   style={styles.startButtonGradient}
                 >
                   {loading ? (
@@ -301,7 +291,7 @@ export default function ReadingScreen() {
                   ) : (
                     <>
                       <Ionicons name="flash" size={24} color="white" />
-                      <Text style={styles.startButtonText}>Begin Reading</Text>
+                      <Text style={styles.startButtonText}>{t.beginReading}</Text>
                     </>
                   )}
                 </LinearGradient>
@@ -309,14 +299,30 @@ export default function ReadingScreen() {
             </View>
           ) : reading ? (
             <View style={styles.readingContainer}>
-              <Text style={styles.readingResultTitle}>Your {config.name}</Text>
+              {/* Language Toggle Button */}
+              <View style={styles.languageContainer}>
+                <TouchableOpacity 
+                  style={styles.languageButton}
+                  onPress={toggleLanguage}
+                  activeOpacity={0.7}
+                >
+                  <Ionicons name="language" size={20} color="white" />
+                  <Text style={styles.languageText}>
+                    {language === 'en' ? 'TR' : 'EN'}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+
+              <Text style={styles.readingResultTitle}>
+                {t.yourReading.replace('{readingName}', readingConfig.name)}
+              </Text>
               
               <View style={styles.cardsDisplay}>
                 {reading.cards.map((cardData, index) => renderCard(cardData, index))}
               </View>
 
               <View style={styles.interpretationContainer}>
-                <Text style={styles.interpretationTitle}>Interpretation</Text>
+                <Text style={styles.interpretationTitle}>{t.interpretation}</Text>
                 <Text style={styles.interpretationText}>{reading.interpretation}</Text>
               </View>
 
@@ -333,7 +339,7 @@ export default function ReadingScreen() {
                   style={styles.newReadingButtonGradient}
                 >
                   <Ionicons name="refresh" size={20} color="white" />
-                  <Text style={styles.newReadingButtonText}>New Reading</Text>
+                  <Text style={styles.newReadingButtonText}>{t.newReading}</Text>
                 </LinearGradient>
               </TouchableOpacity>
             </View>
