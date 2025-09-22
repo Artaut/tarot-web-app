@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   View, 
   Text, 
@@ -13,6 +13,90 @@ import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 
 const { width, height } = Dimensions.get('window');
+
+// Dil desteği
+const translations = {
+  en: {
+    title: "Daily Tarot",
+    subtitle: "Discover your destiny through the ancient wisdom of tarot",
+    chooseReading: "Choose Your Reading",
+    learnExplore: "Learn & Explore",
+    tapToBegin: "Tap to begin",
+    footerText: "Anticipate your future with the wisdom of the ancient Tarot",
+    readings: {
+      card_of_day: {
+        name: "Card of the Day",
+        description: "The simplest Tarot in which you choose the card that will mark your day."
+      },
+      classic_tarot: {
+        name: "Classic Tarot", 
+        description: "A three-card spread that will give you the forecast for today and also offer you some advice on health."
+      },
+      path_of_day: {
+        name: "The Path of the Day",
+        description: "Four-card spread to guess work, money and love for today."
+      },
+      couples_tarot: {
+        name: "The Tarot of the Couples",
+        description: "This love Tarot predicts the future of any couple and offers advice on how to improve their relationship."
+      },
+      yes_no: {
+        name: "Yes or No",
+        description: "Ask the Tarot a question for a direct and reasoned answer."
+      }
+    },
+    features: {
+      cardMeanings: {
+        title: "Card Meanings",
+        description: "Explore the 22 Major Arcana cards and their meanings"
+      },
+      quiz: {
+        title: "Tarot Quiz Game", 
+        description: "Test your knowledge with 198 questions across 3 levels"
+      }
+    }
+  },
+  tr: {
+    title: "Günlük Tarot",
+    subtitle: "Tarot'un kadim bilgeliği ile kaderinizi keşfedin",
+    chooseReading: "Falınızı Seçin",
+    learnExplore: "Öğren & Keşfet", 
+    tapToBegin: "Başlamak için dokunun",
+    footerText: "Kadim Tarot bilgeliği ile geleceğinizi öngörün",
+    readings: {
+      card_of_day: {
+        name: "Günün Kartı",
+        description: "Gününüzü belirleyecek kartı seçtiğiniz en basit Tarot falı."
+      },
+      classic_tarot: {
+        name: "Klasik Tarot",
+        description: "Bugün için öngörü veren ve sağlık konusunda tavsiye sunan üç kartlı yayılım."
+      },
+      path_of_day: {
+        name: "Günün Yolu",
+        description: "Bugün için iş, para ve aşk konularını tahmin eden dört kartlı yayılım."
+      },
+      couples_tarot: {
+        name: "Çiftler Tarot'u",
+        description: "Bu aşk Tarot'u herhangi bir çiftin geleceğini öngörür ve ilişkilerini geliştirme konusunda tavsiye verir."
+      },
+      yes_no: {
+        name: "Evet ya da Hayır",
+        description: "Tarot'a bir soru sorun ve doğrudan, mantıklı bir cevap alın."
+      }
+    },
+    features: {
+      cardMeanings: {
+        title: "Kart Anlamları",
+        description: "22 Büyük Arkana kartını ve anlamlarını keşfedin"
+      },
+      quiz: {
+        title: "Tarot Quiz Oyunu",
+        description: "3 seviyede 198 soru ile bilginizi test edin"
+      }
+    }
+  }
+};
 
 const readingTypes = [
   {
