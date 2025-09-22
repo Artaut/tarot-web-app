@@ -11,27 +11,89 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 
+// Dil desteği
+const translations = {
+  en: {
+    title: "Tarot Quiz Game",
+    subtitle: "Master the 22 Major Arcana with 198 questions across 3 levels of difficulty",
+    questionsTotal: "198 Questions Total",
+    difficultyLevels: "3 Difficulty Levels", 
+    majorArcanaCards: "22 Major Arcana Cards",
+    chooseLevel: "Choose Your Level",
+    learningTips: "Learning Tips",
+    footerText: "Learn while you play! Master the ancient art of Tarot reading.",
+    startQuiz: "Start Quiz",
+    comingSoon: "Quiz Feature",
+    comingSoonMessage: "The {difficulty} quiz with 198 questions across 3 difficulty levels is coming soon! This will help you master the 22 Major Arcana cards.",
+    levels: {
+      beginner: {
+        name: "Beginner",
+        description: "Learn the basics of the Major Arcana"
+      },
+      intermediate: {
+        name: "Intermediate", 
+        description: "Test your knowledge of card meanings"
+      },
+      advanced: {
+        name: "Advanced",
+        description: "Master the deep symbolism and interpretations"
+      }
+    },
+    tips: [
+      "Start with the Card Meanings section to familiarize yourself with each card",
+      "Practice different reading types to understand card contexts",
+      "Progress through difficulty levels gradually for best results"
+    ]
+  },
+  tr: {
+    title: "Tarot Quiz Oyunu",
+    subtitle: "3 zorluk seviyesinde 198 soru ile 22 Büyük Arkana'yı öğrenin",
+    questionsTotal: "Toplam 198 Soru",
+    difficultyLevels: "3 Zorluk Seviyesi",
+    majorArcanaCards: "22 Büyük Arkana Kartı", 
+    chooseLevel: "Seviyenizi Seçin",
+    learningTips: "Öğrenme İpuçları",
+    footerText: "Oynarken öğrenin! Kadim Tarot okuma sanatında ustalaşın.",
+    startQuiz: "Quiz'e Başla",
+    comingSoon: "Quiz Özelliği",
+    comingSoonMessage: "{difficulty} seviyesindeki 198 soruluk quiz yakında geliyor! Bu özellik 22 Büyük Arkana kartını öğrenmenize yardımcı olacak.",
+    levels: {
+      beginner: {
+        name: "Başlangıç",
+        description: "Büyük Arkana'nın temellerini öğrenin"
+      },
+      intermediate: {
+        name: "Orta Seviye",
+        description: "Kart anlamları bilginizi test edin"
+      },
+      advanced: {
+        name: "İleri Seviye", 
+        description: "Derin sembolizm ve yorumlamalarda ustalaşın"
+      }
+    },
+    tips: [
+      "Her kartı tanımak için önce Kart Anlamları bölümüyle başlayın",
+      "Kart bağlamlarını anlamak için farklı fal türlerini deneyin",
+      "En iyi sonuçlar için zorluk seviyelerinde kademeli olarak ilerleyin"
+    ]
+  }
+};
+
 const DIFFICULTY_LEVELS = [
   {
     id: 'beginner',
-    name: 'Beginner',
-    description: 'Learn the basics of the Major Arcana',
     questions: 66,
     color: ['#4CAF50', '#388E3C'],
     icon: 'school-outline' as keyof typeof Ionicons.glyphMap,
   },
   {
-    id: 'intermediate',
-    name: 'Intermediate',
-    description: 'Test your knowledge of card meanings',
+    id: 'intermediate', 
     questions: 66,
     color: ['#FF9800', '#F57C00'],
     icon: 'library-outline' as keyof typeof Ionicons.glyphMap,
   },
   {
     id: 'advanced',
-    name: 'Advanced',
-    description: 'Master the deep symbolism and interpretations',
     questions: 66,
     color: ['#F44336', '#D32F2F'],
     icon: 'flash-outline' as keyof typeof Ionicons.glyphMap,
