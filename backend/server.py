@@ -681,15 +681,70 @@ async def root():
     return {"message": "Tarot API is running"}
 
 @api_router.get("/cards", response_model=List[TarotCard])
-async def get_all_cards():
-    """Get all Major Arcana cards"""
-    return [TarotCard(**card) for card in MAJOR_ARCANA]
+async def get_all_cards(language: str = "en"):
+    """Get all Major Arcana cards with language support"""
+    cards = []
+    for card_data in MAJOR_ARCANA:
+        if language == "tr":
+            # Return Turkish version
+            card = {
+                "id": card_data["id"],
+                "name": card_data.get("name_tr", card_data["name"]),
+                "image_url": card_data["image_url"],
+                "keywords": card_data.get("keywords_tr", card_data["keywords"]),
+                "meaning_upright": card_data.get("meaning_upright_tr", card_data["meaning_upright"]),
+                "meaning_reversed": card_data.get("meaning_reversed_tr", card_data["meaning_reversed"]),
+                "description": card_data.get("description_tr", card_data["description"]),
+                "symbolism": card_data.get("symbolism_tr", card_data["symbolism"]),
+                "yes_no_meaning": card_data.get("yes_no_meaning_tr", card_data["yes_no_meaning"])
+            }
+        else:
+            # Return English version (default)
+            card = {
+                "id": card_data["id"],
+                "name": card_data["name"],
+                "image_url": card_data["image_url"],
+                "keywords": card_data["keywords"],
+                "meaning_upright": card_data["meaning_upright"],
+                "meaning_reversed": card_data["meaning_reversed"],
+                "description": card_data["description"],
+                "symbolism": card_data["symbolism"],
+                "yes_no_meaning": card_data["yes_no_meaning"]
+            }
+        cards.append(TarotCard(**card))
+    return cards
 
 @api_router.get("/cards/{card_id}", response_model=TarotCard)
-async def get_card(card_id: int):
-    """Get a specific card by ID"""
-    for card in MAJOR_ARCANA:
-        if card["id"] == card_id:
+async def get_card(card_id: int, language: str = "en"):
+    """Get a specific card by ID with language support"""
+    for card_data in MAJOR_ARCANA:
+        if card_data["id"] == card_id:
+            if language == "tr":
+                # Return Turkish version
+                card = {
+                    "id": card_data["id"],
+                    "name": card_data.get("name_tr", card_data["name"]),
+                    "image_url": card_data["image_url"],
+                    "keywords": card_data.get("keywords_tr", card_data["keywords"]),
+                    "meaning_upright": card_data.get("meaning_upright_tr", card_data["meaning_upright"]),
+                    "meaning_reversed": card_data.get("meaning_reversed_tr", card_data["meaning_reversed"]),
+                    "description": card_data.get("description_tr", card_data["description"]),
+                    "symbolism": card_data.get("symbolism_tr", card_data["symbolism"]),
+                    "yes_no_meaning": card_data.get("yes_no_meaning_tr", card_data["yes_no_meaning"])
+                }
+            else:
+                # Return English version (default)
+                card = {
+                    "id": card_data["id"],
+                    "name": card_data["name"],
+                    "image_url": card_data["image_url"],
+                    "keywords": card_data["keywords"],
+                    "meaning_upright": card_data["meaning_upright"],
+                    "meaning_reversed": card_data["meaning_reversed"],
+                    "description": card_data["description"],
+                    "symbolism": card_data["symbolism"],
+                    "yes_no_meaning": card_data["yes_no_meaning"]
+                }
             return TarotCard(**card)
     raise HTTPException(status_code=404, detail="Card not found")
 
