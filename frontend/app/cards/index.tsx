@@ -111,12 +111,14 @@ export default function CardsListScreen() {
         end={{ x: 1, y: 1 }}
       >
         <View style={styles.headerRow}>
-          <ExpoImage
-            source={{ uri: getCardImageUrl(item.id) }}
-            style={styles.thumb}
-            contentFit="cover"
-            transition={150}
-          />
+          <View style={styles.thumbWrapper}>
+            <ExpoImage
+              source={{ uri: getCardImageUrl(item.id) }}
+              style={styles.thumb}
+              contentFit="cover"
+              transition={300}
+            />
+          </View>
           <View style={{ flex: 1 }}>
             <View style={styles.titleRow}>
               <Text style={styles.cardName} numberOfLines={1}>{item.name}</Text>
