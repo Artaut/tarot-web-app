@@ -1,0 +1,30 @@
+export type TelemetryEvent = {
+  event: "reading_begin" | "reading_result" | "ai_toggle" | "tone_change" | "length_change";
+  ts?: string;                 // ISO
+  sessionId?: string;          // UUID v4 önerilir
+  userIdHash?: string | null;  // opsiyonel (PII yok; salted hash)
+  lang?: "tr" | "en";
+  type?: string;               // reading type (e.g., "card_of_day", "yes_no")
+  mode?: "ai" | "rule" | "fallback";
+  aiEnabled?: boolean;
+  tone?: "gentle" | "analytical" | "motivational" | "spiritual" | "direct";
+  length?: "short" | "medium" | "long";
+  durationMs?: number;         // reading_begin → reading_result süresi
+  questionPresent?: boolean;   // metni loglama, sadece var/yok
+};
+
+export async function logEvent(ev: TelemetryEvent) {
+  try {
+    const ts = new Date().toISOString();
+    const body = JSON.stringify({ events: [{ ts, ...ev }] });
+    const base = process.env.EXPO_PUBLIC_BACKEND_URL;
+    const url = `${base}/api/log`;
+    await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body,
+    });
+  } catch (e) {
+    // sessizce yut
+  }
+}
