@@ -66,7 +66,7 @@ MAJOR_ARCANA = [
         "id": 0,
         "name": "The Fool",
         "name_tr": "Deli",
-        "image_url": "/assets/cards/fool.jpg",
+        "image_url": "https://customer-assets.emergentagent.com/job_destiny-tarot-2/artifacts/3hmi66rp_deli.jpg",
         "keywords": ["new beginnings", "innocence", "spontaneity", "free spirit"],
         "keywords_tr": ["yeni başlangıçlar", "saflık", "spontanlık", "özgür ruh"],
         "meaning_upright": "New beginnings, innocence, spontaneity, a free spirit, adventure, idealism, inexperience.",
