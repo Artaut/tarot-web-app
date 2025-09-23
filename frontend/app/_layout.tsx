@@ -1,12 +1,12 @@
 import { Slot } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
-import { maybeAskATT } from '@/lib/att';
+// import { maybeAskATT } from '@/lib/att'; // Temporarily disabled for web preview
 
 export default function RootLayout() {
   useEffect(() => {
-    // Kısa bir bilgilendirme UI'ından sonra çağırabilirsiniz
-    maybeAskATT();
+    // ATT temporarily disabled for development
+    // maybeAskATT();
   }, []);
 
   return (
