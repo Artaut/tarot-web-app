@@ -18,6 +18,8 @@ import { useLocalSearchParams, router } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { logEvent } from '../../utils/telemetry';
 import { useRef } from 'react';
+import ResultActionsNative from '@/components/ResultActions.native';
+import { cardIdFromNumeric } from '@/utils/cards';
 
 const { width, height } = Dimensions.get('window');
 const CARD_WIDTH = width * 0.25;
