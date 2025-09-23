@@ -86,6 +86,12 @@ export default function CardDetailScreen() {
         throw new Error('Failed to fetch card');
       }
       const cardData = await response.json();
+      console.log('Card detail response', {
+        id: cardData?.id,
+        name: cardData?.name,
+        hasImage: !!cardData?.image_base64,
+        imagePrefix: cardData?.image_base64 ? cardData.image_base64.slice(0, 30) : null,
+      });
       setCard(cardData);
     } catch (error) {
       console.error('Error fetching card:', error);
