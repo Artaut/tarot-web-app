@@ -89,7 +89,6 @@ def load_image_b64(rel_path: str) -> str:
         logging.warning(f"Failed to load image {rel_path}: {e}")
         return ""
 
-# MAJOR_ARCANA ... (omitted in this snippet for brevity; existing content remains unchanged)
 # Major Arcana minimal data (22 unique cards). Turkish fields may be absent; frontend falls back.
 MAJOR_ARCANA: List[Dict[str, Any]] = [
     {"id": 0,  "name": "The Fool",         "image_url": "", "keywords": [], "meaning_upright": "", "meaning_reversed": "", "description": "", "symbolism": "", "yes_no_meaning": ""},
@@ -124,8 +123,6 @@ READING_TYPES: List[Dict[str, Any]] = [
     {"id": "couples_tarot", "name": "Couples Tarot", "description": "", "card_count": 5, "positions": ["You", "Partner", "Bond", "Obstacle", "Outcome"]},
     {"id": "yes_no", "name": "Yes or No", "description": "", "card_count": 1, "positions": ["Answer"]},
 ]
-
-# READING_TYPES ... (existing content)
 
 # Deduplicate to exactly 22 unique cards by id
 @lru_cache(maxsize=None)
