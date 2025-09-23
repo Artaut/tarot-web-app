@@ -11,6 +11,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.your.mystictarot",
+      "buildNumber": "1",
       "infoPlist": {
         "NSUserTrackingUsageDescription": "Reklam deneyimini iyileştirmek için cihaz tanımlayıcısına erişim izni isteyebiliriz. Reddetmeniz halinde reklamlarda kişiselleştirme yapılmaz."
       },
@@ -23,6 +24,7 @@
       },
       "edgeToEdgeEnabled": true,
       "package": "com.your.mystictarot",
+      "versionCode": 2,
       "intentFilters": [
         {
           "action": "VIEW",
