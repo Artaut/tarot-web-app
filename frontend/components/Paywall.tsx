@@ -1,30 +1,34 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Pressable, ActivityIndicator, Alert } from "react-native";
-import Purchases, { PurchasesPackage } from "react-native-purchases";
+import { Platform, View, Text, Pressable, ActivityIndicator, Alert } from "react-native";
 import { loadOfferings } from "@/lib/premium";
+import { rcAvailable, rcPurchasePackage, rcRestorePurchases } from "@/lib/rc";
 import { logEvent } from "@/utils/telemetry";
 
 export default function Paywall({ onClose }: { onClose?: () => void }) {
   const [loading, setLoading] = useState(true);
-  const [monthly, setMonthly] = useState<PurchasesPackage | null>(null);
-  const [annual, setAnnual] = useState<PurchasesPackage | null>(null);
+  const [monthly, setMonthly] = useState<any | null>(null);
+  const [annual, setAnnual] = useState<any | null>(null);
+
+  const unsupported = Platform.OS === 'web' || !rcAvailable;
 
   useEffect(() => {
     (async () => {
       try {
         const o = await loadOfferings();
-        setMonthly(o.monthly ?? null);
-        setAnnual(o.annual ?? null);
+        setMonthly(o?.monthly ?? null);
+        setAnnual(o?.annual ?? null);
         logEvent({ event: "paywall_view" as any });
-      } finally { setLoading(false); }
+      } finally { 
+        setLoading(false); 
+      }
     })();
   }, []);
 
-  async function buy(pkg: PurchasesPackage | null) {
-    if (!pkg) return;
+  async function buy(pkg: any | null) {
+    if (!pkg || unsupported) return;
     try {
       logEvent({ event: "purchase_attempt" as any, type: pkg.identifier });
-      const { customerInfo } = await Purchases.purchasePackage(pkg);
+      const { customerInfo } = await rcPurchasePackage(pkg);
       const active = !!customerInfo.entitlements.active.premium || !!customerInfo.entitlements.active.no_ads;
       if (active) {
         logEvent({ event: "purchase_success" as any, type: pkg.identifier });
@@ -38,8 +42,9 @@ export default function Paywall({ onClose }: { onClose?: () => void }) {
   }
 
   async function restore() {
+    if (unsupported) return;
     try {
-      await Purchases.restorePurchases();
+      await rcRestorePurchases();
       logEvent({ event: "restore_success" as any });
       onClose?.();
     } catch {
@@ -47,23 +52,42 @@ export default function Paywall({ onClose }: { onClose?: () => void }) {
     }
   }
 
-  if (loading) return <ActivityIndicator />;
+  if (unsupported) {
+    return (
+      <View style={{ padding: 16 }}>
+        <Text style={{ fontSize: 16, textAlign: 'center', opacity: 0.7 }}>
+          Purchases are not available in web preview. Please test on a device build.
+        </Text>
+      </View>
+    );
+  }
+
+  if (loading) return <ActivityIndicator style={{ padding: 20 }} />;
+
+  const packages = [annual, monthly].filter(Boolean);
+  if (packages.length === 0) {
+    return (
+      <View style={{ padding: 16 }}>
+        <Text style={{ textAlign: 'center', opacity: 0.7 }}>No packages available.</Text>
+      </View>
+    );
+  }
 
   return (
-    <View style={{ padding:16, gap:12 }}>
-      <Text style={{ fontSize:20, fontWeight:"700" }}>Enerjini derinleştir</Text>
-      <Text style={{ opacity:0.7 }}>
+    <View style={{ padding: 16, gap: 12 }}>
+      <Text style={{ fontSize: 20, fontWeight: "700" }}>Enerjini derinleştir</Text>
+      <Text style={{ opacity: 0.7 }}>
         Reklamsız deneyim, AI ton/uzunluk özelleştirmesi ve arşiv.
       </Text>
 
       {annual && (
         <Pressable onPress={() => buy(annual)} style={btn} testID="buy-annual">
-          <Text>Yıllık Premium – {annual.product.priceString}</Text>
+          <Text>Yıllık Premium – {annual.product?.priceString ?? 'Yükleniyor...'}</Text>
         </Pressable>
       )}
       {monthly && (
         <Pressable onPress={() => buy(monthly)} style={btn} testID="buy-monthly">
-          <Text>Aylık Premium – {monthly.product.priceString}</Text>
+          <Text>Aylık Premium – {monthly.product?.priceString ?? 'Yükleniyor...'}</Text>
         </Pressable>
       )}
       <Pressable onPress={restore} style={btn} testID="restore">
@@ -72,4 +96,5 @@ export default function Paywall({ onClose }: { onClose?: () => void }) {
     </View>
   );
 }
-const btn = { padding:12, borderRadius:12, borderWidth:1 } as const;
+
+const btn = { padding: 12, borderRadius: 12, borderWidth: 1 } as const;
