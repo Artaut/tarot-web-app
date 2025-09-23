@@ -18,6 +18,23 @@ from functools import lru_cache
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
+
+# Utility to load and base64 encode local image files once and cache
+@lru_cache(maxsize=None)
+def load_image_b64(rel_path: str) -> str:
+    try:
+        abs_path = (ROOT_DIR / rel_path).resolve()
+        mime, _ = mimetypes.guess_type(abs_path)
+        if not mime:
+            mime = 'image/jpeg'
+        with open(abs_path, 'rb') as f:
+            data = f.read()
+        b64 = base64.b64encode(data).decode('utf-8')
+        return f"data:{mime};base64,{b64}"
+    except Exception as e:
+        logging.warning(f"Failed to load image {rel_path}: {e}")
+        return ""
+
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
