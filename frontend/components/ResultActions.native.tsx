@@ -1,7 +1,9 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import { View, Pressable, Text, Share, Linking } from "react-native";
 import { appSchemeUrl, webCardUrl } from "../utils/cards";
 import { logEvent } from "../utils/telemetry";
+import { useEntitlements } from "@/lib/premium";
+import { loadInterstitial, interstitial, canShowInterstitial, AdEventType } from "@/lib/ad";
 
 export default function ResultActionsNative({
   cardId, readingType, shareUrl
@@ -9,11 +11,21 @@ export default function ResultActionsNative({
   const urlApp = appSchemeUrl(cardId as any);
   const urlWeb = webCardUrl(cardId as any);
   const deep = shareUrl || urlWeb;
+  const { isPremium, hasNoAds } = useEntitlements();
+  const gated = !(isPremium || hasNoAds);
 
-  const onNew = useCallback(() => {
+  useEffect(() => { loadInterstitial(); }, []);
+
+  const onNew = useCallback(async () => {
+    try {
+      if (gated && await canShowInterstitial()) {
+        interstitial.addAdEventListener(AdEventType.LOADED, () => interstitial.show());
+        loadInterstitial();
+      }
+    } catch {}
     logEvent({ event: "reading_begin", type: "home" as any });
     Linking.openURL("mystictarot://home");
-  }, []);
+  }, [gated]);
 
   const onMeaning = useCallback(() => {
     Linking.openURL(urlApp);
