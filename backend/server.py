@@ -82,6 +82,7 @@ class QuizQuestion(BaseModel):
     explanation: str
 
 # Major Arcana Data - Türkçe ve İngilizce
+# Note: Images are returned as base64 Data URIs only from the detail endpoint to keep list payloads small.
 MAJOR_ARCANA = [
     {
         "id": 0,
