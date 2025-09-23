@@ -57,6 +57,7 @@ class TarotCard(BaseModel):
     description: str
     symbolism: str
     yes_no_meaning: str
+    image_base64: Optional[str] = None
 
 class ReadingType(BaseModel):
     id: str
