@@ -393,6 +393,18 @@ backend:
           agent: "testing"
           comment: "Successfully tested - POST /api/reading/card_of_day?language=tr works with Turkish fields and interpretation. Card selection draws from unique 22 set, Turkish interpretation generated correctly."
 
+  - task: "AI integration with fallback mechanism"
+    implemented: true
+    working: true
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "Successfully tested - AI integration working properly with fallback mechanism. POST /api/reading/card_of_day?language=tr without EMERGENT_LLM_KEY returns interpretation via fallback in 0.15s (< 2s requirement). POST /api/reading/classic_tarot?language=en with question returns interpretation containing selected card names. No 500 errors or import errors from requests/json usage detected."
+
 frontend:
   # No frontend testing performed as per instructions
 
