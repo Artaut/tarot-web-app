@@ -949,7 +949,7 @@ async def get_readings(limit: int = 10):
     readings = await db.readings.find().sort("timestamp", -1).limit(limit).to_list(limit)
     return [TarotReading(**reading) for reading in readings]
 
-def generate_interpretation(reading_type: str, cards: List[Dict], question: Optional[str] = None, language: str = "en", tone: str = "gentle", length: str = "medium", ai_bypass: bool = False) -> str:
+def generate_interpretation(reading_type: str, cards: List[Dict], question: Optional[str] = None, language: str = "en", tone: str = "gentle", length: str = "medium", ai_bypass: bool = False) -> Tuple[str, str]:
     """Generate interpretation using AI if available; fallback to rule-based text.
     tone: gentle|analytical|motivational|spiritual|direct (AI only)
     length: short|medium|long (applies to both AI and fallback via post-processing)
