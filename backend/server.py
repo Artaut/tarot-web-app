@@ -845,6 +845,22 @@ async def get_card_image(card_id: int):
         logging.warning(f"Failed to serve image for card {card_id}: {e}")
         raise HTTPException(status_code=500, detail="Failed to load image")
 
+@api_router.get("/download/project-zip")
+async def download_project_zip():
+    """Serve the prepared project ZIP for download."""
+    try:
+        zip_name = "mystic-tarot-24-frontend-backend.zip"
+        zip_path = (ROOT_DIR / ".." / zip_name).resolve()
+        if not zip_path.exists():
+            raise HTTPException(status_code=404, detail="Zip not found. Please ask to regenerate.")
+        return FileResponse(path=str(zip_path), media_type="application/zip", filename=zip_name)
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.warning(f"Zip download failed: {e}")
+        raise HTTPException(status_code=500, detail="Failed to serve zip")
+
+
 @api_router.get("/reading-types", response_model=List[ReadingType])
 async def get_reading_types():
     """Get all available reading types"""
