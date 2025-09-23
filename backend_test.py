@@ -30,25 +30,29 @@ API_BASE = f"{BACKEND_URL}/api"
 print(f"Testing backend at: {API_BASE}")
 
 class TarotAPITester:
-    def __init__(self, base_url: str):
-        self.base_url = base_url
-        self.session = requests.Session()
-        self.test_results = []
+    def __init__(self):
+        self.results = []
+        self.total_tests = 0
+        self.passed_tests = 0
         
-    def log_test(self, test_name: str, success: bool, message: str, details: Dict = None):
-        """Log test results"""
+    def log_result(self, test_name: str, passed: bool, details: str = "", response_time: float = 0):
+        """Log test result"""
+        self.total_tests += 1
+        if passed:
+            self.passed_tests += 1
+            status = "✅ PASS"
+        else:
+            status = "❌ FAIL"
+            
         result = {
-            "test": test_name,
-            "success": success,
-            "message": message,
-            "timestamp": datetime.now().isoformat(),
-            "details": details or {}
+            'test': test_name,
+            'status': status,
+            'passed': passed,
+            'details': details,
+            'response_time': f"{response_time:.3f}s" if response_time > 0 else "N/A"
         }
-        self.test_results.append(result)
-        status = "✅ PASS" if success else "❌ FAIL"
-        print(f"{status}: {test_name} - {message}")
-        if details and not success:
-            print(f"   Details: {details}")
+        self.results.append(result)
+        print(f"{status} - {test_name} ({result['response_time']}) - {details}")
     
     def test_root_endpoint(self):
         """Test the root API endpoint"""
