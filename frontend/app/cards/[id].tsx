@@ -83,7 +83,7 @@ export default function CardDetailScreen() {
 
   const fetchCard = async () => {
     try {
-      const response = await fetch(`${BACKEND_URL}/api/cards/${id}?language=${language}`);
+      const response = await fetch(`${BACKEND_URL}/api/cards/${id}?language=${language}&_=${Date.now()}`);
       if (!response.ok) {
         throw new Error('Failed to fetch card');
       }
