@@ -292,6 +292,16 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+  cardImageWrapper: {
+    flex: 1,
+    borderRadius: 16,
+    overflow: 'hidden',
+    backgroundColor: '#0f0f15',
+  },
+  cardImage: {
+    width: '100%',
+    height: '100%',
+  },
   cardNumber: {
     fontSize: 24,
     color: 'rgba(255,255,255,0.7)',
