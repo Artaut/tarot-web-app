@@ -100,6 +100,29 @@ export default function CardDetailScreen() {
     setLanguage(language === 'en' ? 'tr' : 'en');
   };
 
+  // Load persisted toggles
+  useEffect(() => {
+    (async () => {
+      try {
+        const sfx = await AsyncStorage.getItem('settings:sfx');
+        const hpt = await AsyncStorage.getItem('settings:haptics');
+        if (sfx !== null) setSfxEnabled(sfx === '1');
+        if (hpt !== null) setHapticsEnabled(hpt === '1');
+      } catch (e) {}
+    })();
+  }, []);
+
+  const toggleSfx = async () => {
+    const next = !sfxEnabled;
+    setSfxEnabled(next);
+    try { await AsyncStorage.setItem('settings:sfx', next ? '1' : '0'); } catch (e) {}
+  };
+  const toggleHaptics = async () => {
+    const next = !hapticsEnabled;
+    setHapticsEnabled(next);
+    try { await AsyncStorage.setItem('settings:haptics', next ? '1' : '0'); } catch (e) {}
+  };
+
   useEffect(() => {
     if (id) {
       fetchCard();
