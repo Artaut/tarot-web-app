@@ -221,7 +221,7 @@ export default function CardDetailScreen() {
                 try {
                   if (sfxEnabled) {
                     const { sound: s } = await Audio.Sound.createAsync(
-                      require('../../assets/sounds/flip.wav')
+                      require('../assets/sounds/flip.wav')
                     );
                     setSound(s);
                     await s.replayAsync();
