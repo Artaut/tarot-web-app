@@ -830,7 +830,7 @@ async def create_reading(reading_type: str, question: Optional[str] = None, lang
         raise HTTPException(status_code=404, detail="Reading type not found")
     
     # Select random cards
-    selected_cards = random.sample(MAJOR_ARCANA, reading_config["card_count"])
+    selected_cards = random.sample(get_unique_major_arcana(), reading_config["card_count"])
     
     # Create cards with positions - use appropriate language
     reading_cards = []
