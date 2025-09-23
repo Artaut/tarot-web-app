@@ -18,7 +18,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, router } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { logEvent } from '../../utils/telemetry';
-import { useRef, useState, useEffect } from 'react';
+
 import ResultActionsNative from '@/components/ResultActions.native';
 import { cardIdFromNumeric } from '@/utils/cards';
 import Paywall from '@/components/Paywall';
