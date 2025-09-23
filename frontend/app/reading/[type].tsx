@@ -124,6 +124,7 @@ interface TarotReading {
   reading_type: string;
   cards: ReadingCard[];
   interpretation: string;
+  mode?: 'ai' | 'rule' | 'fallback';
   timestamp: string;
 }
 
@@ -194,7 +195,11 @@ export default function ReadingScreen() {
       if (needsQuestion) {
         url += `&question=${encodeURIComponent(question)}`;
       }
-      
+      // Tone/length/aiEnabled param eklemeleri burada olmalı (önceden eklendi varsayıyoruz)
+
+      logEvent({ event: 'reading_begin' as any, type, lang: language, aiEnabled, questionPresent: !!question });
+      const t0 = Date.now();
+
       const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -207,6 +212,9 @@ export default function ReadingScreen() {
       }
 
       const readingData = await response.json();
+      const durationMs = Date.now() - t0;
+      logEvent({ event: 'reading_result' as any, type, lang: language, mode: readingData?.mode, aiEnabled, durationMs });
+
       setReading(readingData);
       setShowCards(true);
     } catch (error) {
@@ -258,6 +266,9 @@ export default function ReadingScreen() {
     );
   }
 
+  const firstCardNumeric: number | undefined = reading?.cards?.[0]?.card?.id;
+  const firstCardId = firstCardNumeric != null ? cardIdFromNumeric(firstCardNumeric) : null;
+
   return (
     <SafeAreaView style={styles.container}>
       <LinearGradient colors={['#0a0a0a', '#1a1a2e', '#16213e']} style={styles.background}>
@@ -293,7 +304,7 @@ export default function ReadingScreen() {
               </View>
 
               <LinearGradient
-                colors={['#4C63D2', '#7C4DFF']} // Varsayılan renk
+                colors={['#4C63D2', '#7C4DFF']}
                 style={styles.headerGradient}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
@@ -323,7 +334,7 @@ export default function ReadingScreen() {
                 disabled={loading}
               >
                 <LinearGradient
-                  colors={['#4C63D2', '#7C4DFF']} // Varsayılan renk
+                  colors={['#4C63D2', '#7C4DFF']}
                   style={styles.startButtonGradient}
                 >
                   {loading ? (
@@ -379,6 +390,10 @@ export default function ReadingScreen() {
                 <Text style={styles.interpretationTitle}>{t.interpretation}</Text>
                 <Text style={styles.interpretationText}>{reading.interpretation}</Text>
               </View>
+
+              {firstCardId && (
+                <ResultActionsNative cardId={firstCardId} readingType={type as string} />
+              )}
 
               <TouchableOpacity
                 style={styles.newReadingButton}
