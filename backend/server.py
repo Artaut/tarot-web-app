@@ -806,7 +806,7 @@ async def get_card(card_id: int, language: str = "en"):
                     "yes_no_meaning": card_data["yes_no_meaning"]
                 }
             # Attach base64 image from local file if available
-            local_path = card_data.get("image_local")
+            local_path = IMAGES_BY_ID.get(card_id)
             card["image_base64"] = load_image_b64(local_path) if local_path else None
             return TarotCard(**card)
     raise HTTPException(status_code=404, detail="Card not found")
