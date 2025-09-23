@@ -11,7 +11,8 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Image } from 'expo-image';
+import { Image as ExpoImage } from 'expo-image';
+import { Image as RNImage } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams } from 'expo-router';
 
