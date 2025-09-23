@@ -939,12 +939,59 @@ async def get_readings(limit: int = 10):
     readings = await db.readings.find().sort("timestamp", -1).limit(limit).to_list(limit)
     return [TarotReading(**reading) for reading in readings]
 
-def generate_interpretation(reading_type: str, cards: List[Dict], question: Optional[str] = None, language: str = "en") -> str:
-    """Generate interpretation using AI if available; fallback to rule-based text"""
+def generate_interpretation(reading_type: str, cards: List[Dict], question: Optional[str] = None, language: str = "en", tone: str = "gentle", length: str = "medium", ai_bypass: bool = False) -> str:
+    """Generate interpretation using AI if available; fallback to rule-based text.
+    tone: gentle|analytical|motivational|spiritual|direct (AI only)
+    length: short|medium|long (applies to both AI and fallback via post-processing)
+    """
     import os, requests, json
     ai_key = os.getenv('EMERGENT_LLM_KEY')
 
-    # Build AI prompt summary from provided cards (already language-specific fields)
+    # Tone/Length guides for prompt
+    TONE_GUIDE_TR = {
+        "gentle": "Üslup: nazik, empatik, yargısız.",
+        "analytical": "Üslup: analitik, kanıtsal, net yapı.",
+        "motivational": "Üslup: motive edici, cesaretlendiren.",
+        "spiritual": "Üslup: sezgisel, ritüel/dingin dil; aşırı determinizmden kaçın.",
+        "direct": "Üslup: doğrudan, kısa ve net; dolandırmadan öner."
+    }
+    LENGTH_GUIDE_TR = {
+        "short": "Yaklaşık 100 kelime (±%20).",
+        "medium": "Yaklaşık 200 kelime (±%20).",
+        "long": "Yaklaşık 350 kelime (±%20)."
+    }
+
+    TARGET_WORDS = {"short": 100, "medium": 200, "long": 350}
+
+    def postprocess_length(text: str) -> str:
+        """Trim text to approx target word count (only trims if longer)"""
+        try:
+            target = TARGET_WORDS.get(length, 200)
+            words = text.split()
+            max_words = int(target * 1.2)
+            if len(words) > max_words:
+                # trim on sentence boundary if possible
+                sentences = [s.strip() for s in text.replace('\n', ' ').split('.') if s.strip()]
+                out = []
+                count = 0
+                for s in sentences:
+                    wc = len(s.split())
+                    if count + wc <= max_words:
+                        out.append(s)
+                        count += wc
+                    else:
+                        break
+                txt = '. '.join(out)
+                if txt:
+                    if not txt.endswith('.'):
+                        txt += '.'
+                    return txt
+                return ' '.join(words[:max_words])
+            return text
+        except Exception:
+            return text
+
+    # Build AI prompt summary from provided cards
     def build_prompt() -> str:
         lang_line = "Lütfen yanıtı Türkçe yaz." if language == "tr" else "Please respond in English."
         rt = reading_type
@@ -976,14 +1023,36 @@ def generate_interpretation(reading_type: str, cards: List[Dict], question: Opti
             else:
                 lines.append(f"- {pos}: {name}{' (Reversed)' if rev else ''} | Keywords: {kw} | Summary: {meaning}")
         if language == "tr":
-            lines.append("Görev: Kartların anlamlarına ve pozisyonlarına dayanarak, empatik, akıcı ve pratik öneriler içeren bir Tarot yorumu yaz. Kısa ve tutarlı olsun; tekrardan kaçın. Markdown kullanma.")
+            # Tone and length instructions
+            tone_line = TONE_GUIDE_TR.get(tone, TONE_GUIDE_TR['gentle'])
+            len_line = LENGTH_GUIDE_TR.get(length, LENGTH_GUIDE_TR['medium'])
+            lines.append(tone_line)
+            lines.append(len_line)
+            lines.append("Biçim: 1 cümle 'bugünün teması' + 3 kısa madde (Aşk/İş/Para) + 1 onay cümlesi.")
+            lines.append("Kaçın: kesin kader söylemleri, korku dili. Öner: uygulanabilir, nazik rehberlik.")
         else:
-            lines.append("Task: Based on the cards and positions, write an empathetic, coherent Tarot reading with practical advice. Keep it concise; avoid repetition. Do not use Markdown.")
+            # English guidance
+            tone_map_en = {
+                "gentle": "Tone: gentle, empathetic, non-judgmental.",
+                "analytical": "Tone: analytical, evidence-based, structured.",
+                "motivational": "Tone: motivational, encouraging.",
+                "spiritual": "Tone: intuitive, calm, avoid determinism.",
+                "direct": "Tone: direct, concise, no beating around the bush."
+            }
+            length_map_en = {
+                "short": "About 100 words (±20%).",
+                "medium": "About 200 words (±20%).",
+                "long": "About 350 words (±20%)."
+            }
+            lines.append(tone_map_en.get(tone, tone_map_en['gentle']))
+            lines.append(length_map_en.get(length, length_map_en['medium']))
+            lines.append("Format: 1-sentence 'theme of the day' + 3 short bullets (Love/Work/Money) + 1 closing sentence.")
+            lines.append("Avoid deterministic/fear language. Provide actionable, kind guidance.")
         lines.append(lang_line)
         return "\n".join(lines)
 
-    # Try AI if key exists
-    if ai_key:
+    # Try AI if key exists and not bypassed
+    if ai_key and not ai_bypass:
         try:
             payload = {
                 "model": os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
@@ -999,13 +1068,13 @@ def generate_interpretation(reading_type: str, cards: List[Dict], question: Opti
                 "Content-Type": "application/json"
             }
             url = os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1") + "/chat/completions"
-            resp = requests.post(url, headers=headers, data=json.dumps(payload), timeout=15)
+            resp = requests.post(url, headers=headers, data=json.dumps(payload), timeout=20)
             if resp.status_code == 200:
                 data = resp.json()
                 if data.get("choices"):
                     content = data["choices"][0]["message"]["content"]
                     if content and isinstance(content, str):
-                        return content.strip()
+                        return postprocess_length(content.strip())
             # fall through on non-200 or empty content
         except Exception as e:
             logging.warning(f"AI interpretation failed, falling back. Error: {e}")
