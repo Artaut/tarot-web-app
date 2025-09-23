@@ -94,6 +94,7 @@ export default function CardDetailScreen() {
         hasImage: !!cardData?.image_base64,
         imagePrefix: cardData?.image_base64 ? cardData.image_base64.slice(0, 30) : null,
       });
+      setImageError(false);
       setCard(cardData);
     } catch (error) {
       console.error('Error fetching card:', error);
