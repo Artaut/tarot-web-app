@@ -1,8 +1,26 @@
-import { InterstitialAd, AdEventType, TestIds } from "react-native-google-mobile-ads";
+// Dynamic require to avoid bundler error on Expo Go / Web when native module isn't available
+let AdsMod: any = null;
+try { AdsMod = require('react-native-google-mobile-ads'); } catch (e) { AdsMod = null; }
+
+const FallbackInterstitial = {
+  createForAdRequest: (_unit: string) => ({
+    load: () => {},
+    addAdEventListener: () => () => {},
+    show: () => {},
+  }),
+};
+
+export const AdEventType = AdsMod?.AdEventType ?? { LOADED: 'LOADED' };
+export const TestIds = AdsMod?.TestIds ?? {
+  INTERSTITIAL: 'ca-app-pub-3940256099942544/1033173712',
+  BANNER: 'ca-app-pub-3940256099942544/6300978111',
+};
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+const Interstitial = AdsMod?.InterstitialAd ?? FallbackInterstitial;
 const interUnit = __DEV__ ? TestIds.INTERSTITIAL : "ca-app-pub-XXXX/INTER";
-export const interstitial = InterstitialAd.createForAdRequest(interUnit);
+export const interstitial = Interstitial.createForAdRequest(interUnit);
 
 export async function canShowInterstitial() {
   const now = Date.now();
