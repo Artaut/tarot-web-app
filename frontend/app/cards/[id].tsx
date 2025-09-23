@@ -154,6 +154,7 @@ export default function CardDetailScreen() {
               {card.image_base64 && !imageError ? (
                 <View style={styles.cardImageWrapper}>
                   <ExpoImage
+                    key={card.image_base64?.slice(0,20) || String(card.id)}
                     source={{ uri: card.image_base64 }}
                     style={styles.cardImage}
                     contentFit="cover"
