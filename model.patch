@@ -166,7 +166,7 @@ index 8aba8ee..e69de29 100644
 -----+                    return f"{base_url}/api"
 -----+    except Exception as e:
 -----+        print(f"Warning: Could not read frontend .env: {e}")
------+    return "https://mystic-tarot-24.preview.emergentagent.com/api"
+-----+    return "https://divinereader.preview.emergentagent.com/api"
 -----+
 -----+BASE_URL = get_backend_url()
 -----+print(f"Testing backend at: {BASE_URL}")
@@ -794,7 +794,7 @@ index 8aba8ee..e69de29 100644
 --------+from typing import Dict, List, Any
 --------+
 --------+# Use the production backend URL from frontend/.env
---------+BACKEND_URL = "https://mystic-tarot-24.preview.emergentagent.com/api"
+--------+BACKEND_URL = "https://divinereader.preview.emergentagent.com/api"
 --------+
 --------+def test_get_cards_turkish():
 --------+    """Test GET /api/cards?language=tr - should return exactly 22 cards with Turkish names, no image_base64"""
@@ -1355,7 +1355,7 @@ index 8aba8ee..e69de29 100644
 ----------------+from typing import Dict, List, Any
 ----------------+
 ----------------+# Get backend URL from environment
-----------------+BACKEND_URL = "https://mystic-tarot-24.preview.emergentagent.com/api"
+----------------+BACKEND_URL = "https://divinereader.preview.emergentagent.com/api"
 ----------------+
 ----------------+class TarotAPITester:
 ----------------+    def __init__(self, base_url: str):

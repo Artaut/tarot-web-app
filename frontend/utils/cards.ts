@@ -44,7 +44,7 @@ export function cardIdFromSlug(slug: string): CardId | null {
 // Web URL (universal link)
 export function webCardUrl(id: CardId) {
   const slug = cardSlugFromId(id);
-  return `https://mystic-tarot-24.preview.emergentagent.com/cards/${slug}`;
+  return `https://divinereader.preview.emergentagent.com/cards/${slug}`;
 }
 
 // Native/Expo scheme URL

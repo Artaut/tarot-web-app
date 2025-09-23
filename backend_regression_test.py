@@ -22,7 +22,7 @@ def get_backend_url():
                     return f"{base_url}/api"
     except Exception as e:
         print(f"Warning: Could not read frontend .env: {e}")
-    return "https://mystic-tarot-24.preview.emergentagent.com/api"
+    return "https://divinereader.preview.emergentagent.com/api"
 
 BASE_URL = get_backend_url()
 print(f"Testing backend at: {BASE_URL}")

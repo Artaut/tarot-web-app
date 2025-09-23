@@ -11,7 +11,7 @@ from datetime import datetime
 from typing import Dict, List, Any
 
 # Get backend URL from environment
-BACKEND_URL = "https://mystic-tarot-24.preview.emergentagent.com/api"
+BACKEND_URL = "https://divinereader.preview.emergentagent.com/api"
 
 class TarotAPITester:
     def __init__(self, base_url: str):

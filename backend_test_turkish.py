@@ -10,7 +10,7 @@ import sys
 from typing import Dict, List, Any
 
 # Use the production backend URL from frontend/.env
-BACKEND_URL = "https://mystic-tarot-24.preview.emergentagent.com/api"
+BACKEND_URL = "https://divinereader.preview.emergentagent.com/api"
 
 def test_get_cards_turkish():
     """Test GET /api/cards?language=tr - should return exactly 22 cards with Turkish names, no image_base64"""
