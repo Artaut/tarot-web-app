@@ -778,7 +778,7 @@ async def get_all_cards(language: str = "en"):
 @api_router.get("/cards/{card_id}", response_model=TarotCard)
 async def get_card(card_id: int, language: str = "en"):
     """Get a specific card by ID with language support. Includes base64 image."""
-    for card_data in MAJOR_ARCANA:
+    for card_data in get_unique_major_arcana():
         if card_data["id"] == card_id:
             # Build base card dict with language
             if language == "tr":
