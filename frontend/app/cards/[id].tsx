@@ -143,16 +143,14 @@ export default function CardDetailScreen() {
           <View style={styles.cardDisplay}>
             <View style={styles.card}>
               {card.image_base64 ? (
-                <>
-                  {/* Image front */}
-                  <View style={styles.cardImageWrapper}>
-                    <img
-                      src={card.image_base64}
-                      alt={card.name}
-                      style={{ width: '100%', height: '100%', borderRadius: 16, objectFit: 'cover' }}
-                    />
-                  </View>
-                </>
+                <View style={styles.cardImageWrapper}>
+                  <Image
+                    source={{ uri: card.image_base64 }}
+                    style={styles.cardImage}
+                    contentFit="cover"
+                    transition={200}
+                  />
+                </View>
               ) : (
                 <LinearGradient
                   colors={['#2D1B69', '#1A1A2E']}
