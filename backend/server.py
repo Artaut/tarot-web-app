@@ -697,6 +697,14 @@ IMAGES_BY_ID: Dict[int, str] = {
 }
 
 
+# Sync image_url fields in MAJOR_ARCANA with local filenames from IMAGES_BY_ID
+for _card in MAJOR_ARCANA:
+    cid = _card.get('id')
+    local_path = IMAGES_BY_ID.get(cid)
+    if local_path:
+        _card['image_url'] = local_path
+
+
 # Reading Types Configuration
 READING_TYPES = [
     {
