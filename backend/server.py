@@ -90,6 +90,41 @@ def load_image_b64(rel_path: str) -> str:
         return ""
 
 # MAJOR_ARCANA ... (omitted in this snippet for brevity; existing content remains unchanged)
+# Major Arcana minimal data (22 unique cards). Turkish fields may be absent; frontend falls back.
+MAJOR_ARCANA: List[Dict[str, Any]] = [
+    {"id": 0,  "name": "The Fool",         "image_url": "", "keywords": [], "meaning_upright": "", "meaning_reversed": "", "description": "", "symbolism": "", "yes_no_meaning": ""},
+    {"id": 1,  "name": "The Magician",     "image_url": "", "keywords": [], "meaning_upright": "", "meaning_reversed": "", "description": "", "symbolism": "", "yes_no_meaning": ""},
+    {"id": 2,  "name": "The High Priestess","image_url": "", "keywords": [], "meaning_upright": "", "meaning_reversed": "", "description": "", "symbolism": "", "yes_no_meaning": ""},
+    {"id": 3,  "name": "The Empress",      "image_url": "", "keywords": [], "meaning_upright": "", "meaning_reversed": "", "description": "", "symbolism": "", "yes_no_meaning": ""},
+    {"id": 4,  "name": "The Emperor",      "image_url": "", "keywords": [], "meaning_upright": "", "meaning_reversed": "", "description": "", "symbolism": "", "yes_no_meaning": ""},
+    {"id": 5,  "name": "The Hierophant",   "image_url": "", "keywords": [], "meaning_upright": "", "meaning_reversed": "", "description": "", "symbolism": "", "yes_no_meaning": ""},
+    {"id": 6,  "name": "The Lovers",       "image_url": "", "keywords": [], "meaning_upright": "", "meaning_reversed": "", "description": "", "symbolism": "", "yes_no_meaning": ""},
+    {"id": 7,  "name": "The Chariot",      "image_url": "", "keywords": [], "meaning_upright": "", "meaning_reversed": "", "description": "", "symbolism": "", "yes_no_meaning": ""},
+    {"id": 8,  "name": "Strength",         "image_url": "", "keywords": [], "meaning_upright": "", "meaning_reversed": "", "description": "", "symbolism": "", "yes_no_meaning": ""},
+    {"id": 9,  "name": "The Hermit",       "image_url": "", "keywords": [], "meaning_upright": "", "meaning_reversed": "", "description": "", "symbolism": "", "yes_no_meaning": ""},
+    {"id": 10, "name": "Wheel of Fortune", "image_url": "", "keywords": [], "meaning_upright": "", "meaning_reversed": "", "description": "", "symbolism": "", "yes_no_meaning": ""},
+    {"id": 11, "name": "Justice",          "image_url": "", "keywords": [], "meaning_upright": "", "meaning_reversed": "", "description": "", "symbolism": "", "yes_no_meaning": ""},
+    {"id": 12, "name": "The Hanged Man",   "image_url": "", "keywords": [], "meaning_upright": "", "meaning_reversed": "", "description": "", "symbolism": "", "yes_no_meaning": ""},
+    {"id": 13, "name": "Death",            "image_url": "", "keywords": [], "meaning_upright": "", "meaning_reversed": "", "description": "", "symbolism": "", "yes_no_meaning": ""},
+    {"id": 14, "name": "Temperance",       "image_url": "", "keywords": [], "meaning_upright": "", "meaning_reversed": "", "description": "", "symbolism": "", "yes_no_meaning": ""},
+    {"id": 15, "name": "The Devil",        "image_url": "", "keywords": [], "meaning_upright": "", "meaning_reversed": "", "description": "", "symbolism": "", "yes_no_meaning": ""},
+    {"id": 16, "name": "The Tower",        "image_url": "", "keywords": [], "meaning_upright": "", "meaning_reversed": "", "description": "", "symbolism": "", "yes_no_meaning": ""},
+    {"id": 17, "name": "The Star",         "image_url": "", "keywords": [], "meaning_upright": "", "meaning_reversed": "", "description": "", "symbolism": "", "yes_no_meaning": ""},
+    {"id": 18, "name": "The Moon",         "image_url": "", "keywords": [], "meaning_upright": "", "meaning_reversed": "", "description": "", "symbolism": "", "yes_no_meaning": ""},
+    {"id": 19, "name": "The Sun",          "image_url": "", "keywords": [], "meaning_upright": "", "meaning_reversed": "", "description": "", "symbolism": "", "yes_no_meaning": ""},
+    {"id": 20, "name": "Judgement",        "image_url": "", "keywords": [], "meaning_upright": "", "meaning_reversed": "", "description": "", "symbolism": "", "yes_no_meaning": ""},
+    {"id": 21, "name": "The World",        "image_url": "", "keywords": [], "meaning_upright": "", "meaning_reversed": "", "description": "", "symbolism": "", "yes_no_meaning": ""},
+]
+
+# Reading types minimal config
+READING_TYPES: List[Dict[str, Any]] = [
+    {"id": "card_of_day", "name": "Card of the Day", "description": "", "card_count": 1, "positions": ["Your Day"]},
+    {"id": "classic_tarot", "name": "Classic Tarot", "description": "", "card_count": 3, "positions": ["Past", "Present", "Future"]},
+    {"id": "path_of_day", "name": "Path of the Day", "description": "", "card_count": 4, "positions": ["Work", "Money", "Love", "Advice"]},
+    {"id": "couples_tarot", "name": "Couples Tarot", "description": "", "card_count": 5, "positions": ["You", "Partner", "Bond", "Obstacle", "Outcome"]},
+    {"id": "yes_no", "name": "Yes or No", "description": "", "card_count": 1, "positions": ["Answer"]},
+]
+
 # READING_TYPES ... (existing content)
 
 # Deduplicate to exactly 22 unique cards by id
