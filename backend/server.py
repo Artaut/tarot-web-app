@@ -746,6 +746,9 @@ async def get_all_cards(language: str = "en"):
     """Get all Major Arcana cards with language support"""
     cards = []
     for card_data in get_unique_major_arcana():
+        # ensure IMAGES_BY_ID path exists for detail endpoint usage
+        if card_data.get('id') in IMAGES_BY_ID:
+            card_data['image_local'] = IMAGES_BY_ID[card_data['id']]
         if language == "tr":
             # Return Turkish version
             card = {
