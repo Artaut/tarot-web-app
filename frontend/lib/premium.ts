@@ -1,25 +1,13 @@
-// Dynamic require to avoid bundler error when native module isn't available
-let Purchases: any = null;
-try {
-  Purchases = require("react-native-purchases").default;
-} catch (e) {
-  // RevenueCat not available - create mock for web environment
-  Purchases = {
-    configure: async () => {},
-    setLogLevel: async () => {},
-    getCustomerInfo: async () => ({ entitlements: { active: {} } }),
-    addCustomerInfoUpdateListener: () => ({ remove: () => {} }),
-    getOfferings: async () => ({ current: null }),
-    LOG_LEVEL: { VERBOSE: 'verbose' }
-  };
-}
-
+// frontend/lib/premium.ts
+import { Platform } from 'react-native';
+import { useEffect, useState } from 'react';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useEffect, useState } from "react";
 import 'react-native-get-random-values';
 import { v4 as uuid } from "uuid";
+import { rcAvailable, rcConfigure, rcGetCustomerInfo, rcGetOfferings } from '@/lib/rc';
 
 const STORAGE_KEY = "appUserId";
+let _started = false;
 
 export async function getOrCreateAppUserId() {
   let id = await AsyncStorage.getItem(STORAGE_KEY);
@@ -30,77 +18,62 @@ export async function getOrCreateAppUserId() {
   return id;
 }
 
-export async function initRevenueCat(publicApiKey: string) {
-  try {
-    const appUserId = await getOrCreateAppUserId();
-    await Purchases.configure({ apiKey: publicApiKey, appUserID: appUserId });
-    if (__DEV__) {
-      await Purchases.setLogLevel(Purchases.LOG_LEVEL.VERBOSE);
-    }
-    return appUserId;
-  } catch (error) {
-    // Gracefully handle initialization errors (e.g., in web environment)
-    console.log('RevenueCat initialization skipped (not available in current environment)');
-    return await getOrCreateAppUserId();
-  }
+export async function initRevenueCat() {
+  if (_started) return;
+  _started = true;
+
+  const apiKey = Platform.select({
+    android: process.env.EXPO_PUBLIC_RC_ANDROID_KEY,
+    ios: process.env.EXPO_PUBLIC_RC_IOS_KEY,
+    default: null,
+  }) as string | null;
+
+  // Web veya anahtar yoksa sessizce geç
+  if (!apiKey || !rcAvailable) return;
+  
+  const appUserId = await getOrCreateAppUserId();
+  await rcConfigure({ apiKey, appUserID: appUserId });
 }
 
 export function useEntitlements() {
-  const [loading, setLoading] = useState(true);
-  const [isPremium, setIsPremium] = useState(false);
-  const [hasNoAds, setHasNoAds] = useState(false);
-
-  async function refresh() {
-    try {
-      const info = await Purchases.getCustomerInfo();
-      setIsPremium(!!info.entitlements.active.premium);
-      setHasNoAds(!!info.entitlements.active.no_ads);
-    } catch (error) {
-      // Default to non-premium in case of errors
-      setIsPremium(false);
-      setHasNoAds(false);
-    }
-  }
+  const [state, setState] = useState({
+    loading: true,
+    isPremium: false,
+    hasNoAds: false,
+    error: null as string | null,
+  });
 
   useEffect(() => {
-    (async () => { 
-      try { 
-        await refresh(); 
-      } finally { 
-        setLoading(false); 
-      } 
+    let alive = true;
+    (async () => {
+      try {
+        await initRevenueCat();
+        if (!rcAvailable) {
+          if (alive) setState({ loading: false, isPremium: false, hasNoAds: false, error: null });
+          return;
+        }
+        const info = await rcGetCustomerInfo();
+        const ent = info?.entitlements?.active ?? {};
+        const isPremium = !!ent['premium'];
+        const hasNoAds = !!ent['no_ads'] || isPremium;
+        if (alive) setState({ loading: false, isPremium, hasNoAds, error: null });
+      } catch (e: any) {
+        if (alive) setState({ loading: false, isPremium: false, hasNoAds: false, error: String(e?.message ?? e) });
+      }
     })();
-    
-    let listener: any = null;
-    try {
-      listener = Purchases.addCustomerInfoUpdateListener(refresh);
-    } catch (error) {
-      // Listener not available, that's okay
-    }
-    
-    return () => listener?.remove?.();
+    return () => { alive = false; };
   }, []);
 
-  return { loading, isPremium, hasNoAds, refresh };
+  return state;
+}
+
+export async function loadOfferings() {
+  await initRevenueCat();
+  if (!rcAvailable) return null;
+  return rcGetOfferings();
 }
 
 export type OfferingPick = {
   monthly?: any | null;
   annual?: any | null;
 };
-
-export async function loadOfferings(): Promise<OfferingPick> {
-  try {
-    const offerings = await Purchases.getOfferings();
-    return {
-      monthly: offerings.current?.monthly ?? null,
-      annual: offerings.current?.annual ?? null,
-    };
-  } catch (error) {
-    // Return empty offerings if not available
-    return {
-      monthly: null,
-      annual: null,
-    };
-  }
-}
