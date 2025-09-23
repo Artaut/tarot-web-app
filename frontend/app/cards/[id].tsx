@@ -172,37 +172,69 @@ export default function CardDetailScreen() {
 
           {/* Card Visual with Image */}
           <View style={styles.cardDisplay}>
-            <View style={styles.card}>
-              {card.image_base64 && !imageError ? (
-                <View style={styles.cardImageWrapper}>
-                  <ExpoImage
-                    key={card.image_base64?.slice(0,20) || String(card.id)}
-                    source={{ uri: card.image_base64 }}
-                    style={styles.cardImage}
-                    contentFit="cover"
-                    transition={200}
-                    onError={() => setImageError(true)}
-                  />
-                </View>
-              ) : card.image_base64 && imageError ? (
-                <View style={styles.cardImageWrapper}>
-                  <RNImage
-                    source={{ uri: card.image_base64 }}
-                    style={styles.cardImage}
-                    resizeMode="cover"
-                    onError={() => setImageError(true)}
-                  />
-                </View>
-              ) : (
+            <TapGestureHandler
+              onActivated={async () => {
+                // flip
+                flip.value = withSpring(flip.value === 0 ? 1 : 0, { damping: 12, stiffness: 120 });
+                // haptics
+                try { if (hapticsEnabled) await Haptics.selectionAsync(); } catch (e) {}
+                // sfx
+                try {
+                  if (sfxEnabled) {
+                    const { sound: s } = await Audio.Sound.createAsync(
+                      require('../../assets/sounds/flip.wav')
+                    );
+                    setSound(s);
+                    await s.replayAsync();
+                  }
+                } catch (e) {}
+              }}
+            >
+              <Animated.View style={[styles.card, frontStyle]}>
+                {card.image_base64 && !imageError ? (
+                  <View style={styles.cardImageWrapper}>
+                    <ExpoImage
+                      key={card.image_base64?.slice(0,20) || String(card.id)}
+                      source={{ uri: card.image_base64 }}
+                      style={styles.cardImage}
+                      contentFit="cover"
+                      transition={200}
+                      onError={() => setImageError(true)}
+                    />
+                  </View>
+                ) : card.image_base64 && imageError ? (
+                  <View style={styles.cardImageWrapper}>
+                    <RNImage
+                      source={{ uri: card.image_base64 }}
+                      style={styles.cardImage}
+                      resizeMode="cover"
+                      onError={() => setImageError(true)}
+                    />
+                  </View>
+                ) : (
+                  <LinearGradient
+                    colors={['#2D1B69', '#1A1A2E']}
+                    style={styles.cardGradient}
+                  >
+                    <Text style={styles.cardNumber}>{card.id}</Text>
+                    <Text style={styles.cardNameOnCard}>{card.name}</Text>
+                  </LinearGradient>
+                )}
+              </Animated.View>
+
+              {/* Back side with basic info */}
+              <Animated.View style={[styles.card, styles.cardBack, backStyle]}>
                 <LinearGradient
-                  colors={['#2D1B69', '#1A1A2E']}
-                  style={styles.cardGradient}
+                  colors={['#1A1A2E', '#0F0F23']}
+                  style={[styles.cardGradient, { alignItems: 'flex-start' }]}
                 >
-                  <Text style={styles.cardNumber}>{card.id}</Text>
-                  <Text style={styles.cardNameOnCard}>{card.name}</Text>
+                  <Text style={styles.cardBackTitle}>{card.name}</Text>
+                  <Text style={styles.cardBackText} numberOfLines={6}>
+                    {card.description}
+                  </Text>
                 </LinearGradient>
-              )}
-            </View>
+              </Animated.View>
+            </TapGestureHandler>
           </View>
 
           {/* Card Information */}
