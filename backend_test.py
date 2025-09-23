@@ -1,17 +1,33 @@
 #!/usr/bin/env python3
 """
-Comprehensive Backend API Tests for Tarot Application
-Tests all API endpoints for proper functionality and data structure
+Backend Regression Test Suite for Tarot API
+Ship-Ready Verification Tests
+
+Tests critical endpoints after configuration updates:
+- GET /api/cards (22 Major Arcana cards)
+- GET /api/cards/{id} (specific card retrieval)
+- POST /api/reading/card_of_day (Turkish language support)
+- POST /api/reading/classic_tarot (English with AI interpretation)
+- Health check of all 5 reading types
 """
 
 import requests
 import json
 import sys
+import time
 from datetime import datetime
 from typing import Dict, List, Any
+import os
+from dotenv import load_dotenv
 
-# Get backend URL from environment
-BACKEND_URL = "https://divinereader.preview.emergentagent.com/api"
+# Load environment variables
+load_dotenv('/app/frontend/.env')
+
+# Get backend URL from frontend environment
+BACKEND_URL = os.getenv('EXPO_PUBLIC_BACKEND_URL', 'https://divinereader.preview.emergentagent.com')
+API_BASE = f"{BACKEND_URL}/api"
+
+print(f"Testing backend at: {API_BASE}")
 
 class TarotAPITester:
     def __init__(self, base_url: str):
