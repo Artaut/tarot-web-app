@@ -773,7 +773,7 @@ async def get_all_cards(language: str = "en"):
                 "yes_no_meaning": card_data["yes_no_meaning"]
             }
         cards.append(TarotCard(**card))
-    return cards
+    return [TarotCard(**c) for c in cards]
 
 @api_router.get("/cards/{card_id}", response_model=TarotCard)
 async def get_card(card_id: int, language: str = "en"):
