@@ -61,6 +61,19 @@ export default function CardsListScreen() {
   }, [language]); // language değiştiğinde kartları yeniden yükle
 
   const fetchCards = async () => {
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/cards?language=${language}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch cards');
+      }
+      const cardsData = await response.json();
+      setCards(cardsData);
+    } catch (error) {
+      console.error('Error fetching cards:', error);
+      Alert.alert(t.error, t.errorMessage);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const getCardImageUrl = (id: number) => `${BACKEND_URL}/api/cards/${id}/image`;
