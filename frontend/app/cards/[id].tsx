@@ -138,16 +138,29 @@ export default function CardDetailScreen() {
             </TouchableOpacity>
           </View>
 
-          {/* Card Visual */}
+          {/* Card Visual with Image */}
           <View style={styles.cardDisplay}>
             <View style={styles.card}>
-              <LinearGradient
-                colors={['#2D1B69', '#1A1A2E']}
-                style={styles.cardGradient}
-              >
-                <Text style={styles.cardNumber}>{card.id}</Text>
-                <Text style={styles.cardNameOnCard}>{card.name}</Text>
-              </LinearGradient>
+              {card.image_base64 ? (
+                <>
+                  {/* Image front */}
+                  <View style={styles.cardImageWrapper}>
+                    <img
+                      src={card.image_base64}
+                      alt={card.name}
+                      style={{ width: '100%', height: '100%', borderRadius: 16, objectFit: 'cover' }}
+                    />
+                  </View>
+                </>
+              ) : (
+                <LinearGradient
+                  colors={['#2D1B69', '#1A1A2E']}
+                  style={styles.cardGradient}
+                >
+                  <Text style={styles.cardNumber}>{card.id}</Text>
+                  <Text style={styles.cardNameOnCard}>{card.name}</Text>
+                </LinearGradient>
+              )}
             </View>
           </View>
 
