@@ -1,86 +1,86 @@
 [
   {
-    "test": "Root Endpoint",
-    "success": true,
-    "message": "API is running and accessible",
-    "timestamp": "2025-09-22T10:57:29.248587",
-    "details": {}
+    "test": "GET /api/cards",
+    "status": "\u2705 PASS",
+    "passed": true,
+    "details": "22 cards with proper structure, IDs 0-21",
+    "response_time": "0.115s"
   },
   {
-    "test": "Get All Cards",
-    "success": true,
-    "message": "Successfully retrieved 22 cards with proper structure",
-    "timestamp": "2025-09-22T10:57:29.257519",
-    "details": {}
+    "test": "GET /api/cards/0",
+    "status": "\u2705 PASS",
+    "passed": true,
+    "details": "Correct card: The Fool, has image_base64",
+    "response_time": "0.068s"
   },
   {
-    "test": "Get Specific Card",
-    "success": true,
-    "message": "Successfully retrieved The Fool card with all fields",
-    "timestamp": "2025-09-22T10:57:29.266141",
-    "details": {}
+    "test": "GET /api/cards/20",
+    "status": "\u2705 PASS",
+    "passed": true,
+    "details": "Correct card: Judgement, has image_base64",
+    "response_time": "0.061s"
   },
   {
-    "test": "Get Invalid Card",
-    "success": true,
-    "message": "Properly returns 404 for invalid card ID",
-    "timestamp": "2025-09-22T10:57:29.274254",
-    "details": {}
+    "test": "POST /api/reading/card_of_day (Turkish)",
+    "status": "\u2705 PASS",
+    "passed": true,
+    "details": "Turkish reading generated, mode: rule",
+    "response_time": "0.074s"
   },
   {
-    "test": "Get Reading Types",
-    "success": true,
-    "message": "Successfully retrieved 5 reading types with proper structure",
-    "timestamp": "2025-09-22T10:57:29.321996",
-    "details": {}
+    "test": "POST /api/reading/classic_tarot (English)",
+    "status": "\u2705 PASS",
+    "passed": true,
+    "details": "3-card reading generated, mode: rule",
+    "response_time": "0.054s"
   },
   {
-    "test": "Create Reading (card_of_day)",
-    "success": true,
-    "message": "Successfully created reading with 1 cards and interpretation",
-    "timestamp": "2025-09-22T10:57:29.344702",
-    "details": {}
+    "test": "Health check: card_of_day",
+    "status": "\u2705 PASS",
+    "passed": true,
+    "details": "1 cards, interpretation generated",
+    "response_time": "0.053s"
   },
   {
-    "test": "Create Reading (classic_tarot)",
-    "success": true,
-    "message": "Successfully created reading with 3 cards and interpretation",
-    "timestamp": "2025-09-22T10:57:29.352163",
-    "details": {}
+    "test": "Health check: classic_tarot",
+    "status": "\u2705 PASS",
+    "passed": true,
+    "details": "3 cards, interpretation generated",
+    "response_time": "0.053s"
   },
   {
-    "test": "Create Reading (path_of_day)",
-    "success": true,
-    "message": "Successfully created reading with 4 cards and interpretation",
-    "timestamp": "2025-09-22T10:57:29.360068",
-    "details": {}
+    "test": "Health check: path_of_day",
+    "status": "\u2705 PASS",
+    "passed": true,
+    "details": "4 cards, interpretation generated",
+    "response_time": "0.058s"
   },
   {
-    "test": "Create Reading (couples_tarot)",
-    "success": true,
-    "message": "Successfully created reading with 5 cards and interpretation",
-    "timestamp": "2025-09-22T10:57:29.367263",
-    "details": {}
+    "test": "Health check: couples_tarot",
+    "status": "\u2705 PASS",
+    "passed": true,
+    "details": "5 cards, interpretation generated",
+    "response_time": "0.052s"
   },
   {
-    "test": "Create Reading (yes_no)",
-    "success": true,
-    "message": "Successfully created reading with 1 cards and interpretation",
-    "timestamp": "2025-09-22T10:57:29.415281",
-    "details": {}
+    "test": "Health check: yes_no",
+    "status": "\u2705 PASS",
+    "passed": true,
+    "details": "1 cards, interpretation generated",
+    "response_time": "0.052s"
   },
   {
-    "test": "Create Invalid Reading",
-    "success": true,
-    "message": "Properly returns 404 for invalid reading type",
-    "timestamp": "2025-09-22T10:57:29.421196",
-    "details": {}
+    "test": "GET /api/reading-types",
+    "status": "\u2705 PASS",
+    "passed": true,
+    "details": "5 reading types with proper structure",
+    "response_time": "0.054s"
   },
   {
-    "test": "Get Readings",
-    "success": true,
-    "message": "Successfully retrieved 5 readings",
-    "timestamp": "2025-09-22T10:57:29.428709",
-    "details": {}
+    "test": "GET /api/readings",
+    "status": "\u2705 PASS",
+    "passed": true,
+    "details": "Retrieved 10 readings",
+    "response_time": "0.050s"
   }
 ]
