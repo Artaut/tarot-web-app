@@ -1,4 +1,19 @@
-import Purchases from "react-native-purchases";
+// Dynamic require to avoid bundler error when native module isn't available
+let Purchases: any = null;
+try {
+  Purchases = require("react-native-purchases").default;
+} catch (e) {
+  // RevenueCat not available - create mock for web environment
+  Purchases = {
+    configure: async () => {},
+    setLogLevel: async () => {},
+    getCustomerInfo: async () => ({ entitlements: { active: {} } }),
+    addCustomerInfoUpdateListener: () => ({ remove: () => {} }),
+    getOfferings: async () => ({ current: null }),
+    LOG_LEVEL: { VERBOSE: 'verbose' }
+  };
+}
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
 import 'react-native-get-random-values';
@@ -16,12 +31,18 @@ export async function getOrCreateAppUserId() {
 }
 
 export async function initRevenueCat(publicApiKey: string) {
-  const appUserId = await getOrCreateAppUserId();
-  await Purchases.configure({ apiKey: publicApiKey, appUserID: appUserId });
-  if (__DEV__) {
-    await Purchases.setLogLevel(Purchases.LOG_LEVEL.VERBOSE);
+  try {
+    const appUserId = await getOrCreateAppUserId();
+    await Purchases.configure({ apiKey: publicApiKey, appUserID: appUserId });
+    if (__DEV__) {
+      await Purchases.setLogLevel(Purchases.LOG_LEVEL.VERBOSE);
+    }
+    return appUserId;
+  } catch (error) {
+    // Gracefully handle initialization errors (e.g., in web environment)
+    console.log('RevenueCat initialization skipped (not available in current environment)');
+    return await getOrCreateAppUserId();
   }
-  return appUserId;
 }
 
 export function useEntitlements() {
@@ -30,29 +51,56 @@ export function useEntitlements() {
   const [hasNoAds, setHasNoAds] = useState(false);
 
   async function refresh() {
-    const info = await Purchases.getCustomerInfo();
-    setIsPremium(!!info.entitlements.active.premium);
-    setHasNoAds(!!info.entitlements.active.no_ads);
+    try {
+      const info = await Purchases.getCustomerInfo();
+      setIsPremium(!!info.entitlements.active.premium);
+      setHasNoAds(!!info.entitlements.active.no_ads);
+    } catch (error) {
+      // Default to non-premium in case of errors
+      setIsPremium(false);
+      setHasNoAds(false);
+    }
   }
 
   useEffect(() => {
-    (async () => { try { await refresh(); } finally { setLoading(false); } })();
-    const listener = Purchases.addCustomerInfoUpdateListener(refresh);
-    return () => listener.remove();
+    (async () => { 
+      try { 
+        await refresh(); 
+      } finally { 
+        setLoading(false); 
+      } 
+    })();
+    
+    let listener: any = null;
+    try {
+      listener = Purchases.addCustomerInfoUpdateListener(refresh);
+    } catch (error) {
+      // Listener not available, that's okay
+    }
+    
+    return () => listener?.remove?.();
   }, []);
 
   return { loading, isPremium, hasNoAds, refresh };
 }
 
 export type OfferingPick = {
-  monthly?: import("react-native-purchases").PurchasesPackage | null;
-  annual?: import("react-native-purchases").PurchasesPackage | null;
+  monthly?: any | null;
+  annual?: any | null;
 };
 
 export async function loadOfferings(): Promise<OfferingPick> {
-  const offerings = await Purchases.getOfferings();
-  return {
-    monthly: offerings.current?.monthly ?? null,
-    annual: offerings.current?.annual ?? null,
-  };
+  try {
+    const offerings = await Purchases.getOfferings();
+    return {
+      monthly: offerings.current?.monthly ?? null,
+      annual: offerings.current?.annual ?? null,
+    };
+  } catch (error) {
+    // Return empty offerings if not available
+    return {
+      monthly: null,
+      annual: null,
+    };
+  }
 }
