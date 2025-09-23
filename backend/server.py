@@ -692,7 +692,7 @@ IMAGES_BY_ID: Dict[int, str] = {
     17: 'card_images/yildiz-karti.jpg',
     18: 'card_images/ay-karti.jpg',
     19: 'card_images/gunes-karti.jpg',
-    20: 'card_images/yargi.webp',
+    20: 'card_images/mahkeme-karti.jpg',
     21: 'card_images/dunya-karti.jpg',
 }
 
