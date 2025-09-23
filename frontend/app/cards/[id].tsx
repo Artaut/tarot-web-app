@@ -56,6 +56,7 @@ interface TarotCard {
   description: string;
   symbolism: string;
   yes_no_meaning: string;
+  image_base64?: string | null;
 }
 
 export default function CardDetailScreen() {
