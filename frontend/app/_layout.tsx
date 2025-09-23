@@ -1,6 +1,7 @@
 import { Slot } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
+import { Platform } from 'react-native';
 import { initRevenueCat } from '@/lib/premium';
 
 // RevenueCat API Keys (Test keys - replace with actual keys for production)
