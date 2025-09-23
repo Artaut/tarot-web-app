@@ -61,6 +61,11 @@ export default function CardsListScreen() {
   }, [language]); // language değiştiğinde kartları yeniden yükle
 
   const fetchCards = async () => {
+  };
+
+  const getCardImageUrl = (id: number) => `${BACKEND_URL}/api/cards/${id}/image`;
+
+  const fetchCards_real = async () => {
     try {
       const response = await fetch(`${BACKEND_URL}/api/cards?language=${language}`);
       if (!response.ok) {
