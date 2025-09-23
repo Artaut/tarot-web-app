@@ -151,7 +151,7 @@ export default function CardDetailScreen() {
             <View style={styles.card}>
               {card.image_base64 ? (
                 <View style={styles.cardImageWrapper}>
-                  <Image
+                  <ExpoImage
                     source={{ uri: card.image_base64 }}
                     style={styles.cardImage}
                     contentFit="cover"
