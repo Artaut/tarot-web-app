@@ -110,23 +110,31 @@ export default function CardsListScreen() {
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
       >
-        <View style={styles.cardHeader}>
-          <View style={styles.cardNumberContainer}>
-            <Text style={styles.cardNumber}>{item.id}</Text>
+        <View style={styles.headerRow}>
+          <ExpoImage
+            source={{ uri: getCardImageUrl(item.id) }}
+            style={styles.thumb}
+            contentFit="cover"
+            transition={150}
+          />
+          <View style={{ flex: 1 }}>
+            <View style={styles.titleRow}>
+              <Text style={styles.cardName} numberOfLines={1}>{item.name}</Text>
+              <View style={styles.cardNumberContainer}>
+                <Text style={styles.cardNumber}>{item.id}</Text>
+              </View>
+            </View>
+            <View style={styles.keywordsContainer}>
+              {item.keywords.slice(0, 3).map((keyword, index) => (
+                <View key={index} style={styles.keywordBadge}>
+                  <Text style={styles.keywordText}>{keyword}</Text>
+                </View>
+              ))}
+            </View>
           </View>
           <Ionicons name="chevron-forward" size={24} color="rgba(255,255,255,0.6)" />
         </View>
-        
-        <Text style={styles.cardName}>{item.name}</Text>
-        
-        <View style={styles.keywordsContainer}>
-          {item.keywords.slice(0, 3).map((keyword, index) => (
-            <View key={index} style={styles.keywordBadge}>
-              <Text style={styles.keywordText}>{keyword}</Text>
-            </View>
-          ))}
-        </View>
-        
+
         <Text style={styles.cardDescription} numberOfLines={2}>
           {item.description}
         </Text>
