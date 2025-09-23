@@ -72,6 +72,7 @@ class TarotReading(BaseModel):
     reading_type: str
     cards: List[Dict[str, Any]]
     interpretation: str
+    mode: str = Field(default="rule")  # 'ai' | 'rule' | 'fallback'
     timestamp: datetime = Field(default_factory=datetime.utcnow)
 
 class QuizQuestion(BaseModel):
