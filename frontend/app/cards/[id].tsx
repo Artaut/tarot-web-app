@@ -64,6 +64,7 @@ interface TarotCard {
 export default function CardDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const [card, setCard] = useState<TarotCard | null>(null);
+  const [imageError, setImageError] = useState(false);
   const [loading, setLoading] = useState(true);
   const [language, setLanguage] = useState('tr'); // Varsayılan Türkçe
   const t = translations[language];
