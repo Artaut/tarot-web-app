@@ -823,6 +823,28 @@ async def get_card(card_id: int, language: str = "en"):
             return TarotCard(**card)
     raise HTTPException(status_code=404, detail="Card not found")
 
+@api_router.get("/cards/{card_id}/image")
+async def get_card_image(card_id: int):
+    """Return raw image bytes for a card to be used as thumbnail in lists"""
+    local_path = IMAGES_BY_ID.get(card_id)
+    if not local_path:
+        raise HTTPException(status_code=404, detail="Image not found")
+    try:
+        abs_path = (ROOT_DIR / local_path).resolve()
+        if not abs_path.exists():
+            raise HTTPException(status_code=404, detail="Image file missing")
+        mime, _ = mimetypes.guess_type(str(abs_path))
+        if not mime:
+            mime = "image/jpeg"
+        with open(abs_path, "rb") as f:
+            data = f.read()
+        return Response(content=data, media_type=mime)
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.warning(f"Failed to serve image for card {card_id}: {e}")
+        raise HTTPException(status_code=500, detail="Failed to load image")
+
 @api_router.get("/reading-types", response_model=List[ReadingType])
 async def get_reading_types():
     """Get all available reading types"""
