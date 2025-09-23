@@ -52,3 +52,36 @@ export function appSchemeUrl(id: CardId) {
   const slug = cardSlugFromId(id);
   return `mystictarot://cards/${slug}`;
 }
+
+// Numeric (0..21) -> CardId mapping (RWS order)
+export const NUMERIC_ID_TO_CARD_ID: CardId[] = [
+  "fool",             // 0
+  "magician",         // 1
+  "high_priestess",   // 2
+  "empress",          // 3
+  "emperor",          // 4
+  "hierophant",       // 5
+  "lovers",           // 6
+  "chariot",          // 7
+  "strength",         // 8
+  "hermit",           // 9
+  "wheel_of_fortune", // 10
+  "justice",          // 11
+  "hanged_man",       // 12
+  "death",            // 13
+  "temperance",       // 14
+  "devil",            // 15
+  "tower",            // 16
+  "star",             // 17
+  "moon",             // 18
+  "sun",              // 19
+  "judgement",        // 20
+  "world"             // 21
+];
+
+export function cardIdFromNumeric(n: number): CardId | null {
+  if (Number.isInteger(n) && n >= 0 && n < NUMERIC_ID_TO_CARD_ID.length) {
+    return NUMERIC_ID_TO_CARD_ID[n];
+  }
+  return null;
+}
