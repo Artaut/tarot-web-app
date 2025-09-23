@@ -38,4 +38,3 @@ export async function canShowInterstitial() {
 }
 
 export function loadInterstitial() { interstitial.load(); }
-export { AdEventType };
