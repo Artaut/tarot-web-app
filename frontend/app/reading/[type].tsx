@@ -128,6 +128,7 @@ export default function ReadingScreen() {
   const t = translations[language];
   
   const [question, setQuestion] = useState('');
+  const [aiEnabled, setAiEnabled] = useState(true);
   const [reading, setReading] = useState<TarotReading | null>(null);
   const [loading, setLoading] = useState(false);
   const [showCards, setShowCards] = useState(false);
