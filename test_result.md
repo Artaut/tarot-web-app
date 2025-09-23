@@ -404,7 +404,8 @@ metadata:
 
 test_plan:
   current_focus:
-    - "All backend API endpoints tested and working"
+    - "Turkish language support testing completed successfully"
+    - "All backend API endpoints verified working"
   stuck_tasks: []
   test_all: true
   test_priority: "high_first"
