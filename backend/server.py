@@ -868,8 +868,17 @@ async def get_reading_types():
     return [ReadingType(**reading_type) for reading_type in READING_TYPES]
 
 @api_router.post("/reading/{reading_type}", response_model=TarotReading)
-async def create_reading(reading_type: str, question: Optional[str] = None, language: str = "en", ai: Optional[str] = None):
+async def create_reading(reading_type: str, question: Optional[str] = None, language: str = "en", ai: Optional[str] = None, tone: Optional[str] = "gentle", length: Optional[str] = "medium"):
     """Create a new tarot reading with language support"""
+    # Normalize enums
+    tone_allowed = {"gentle", "analytical", "motivational", "spiritual", "direct"}
+    length_allowed = {"short", "medium", "long"}
+    if tone not in tone_allowed:
+        tone = "gentle"
+    if length not in length_allowed:
+        length = "medium"
+    ai_bypass = (ai == "off")
+
     # Find reading type configuration
     reading_config = None
     for rt in READING_TYPES:
