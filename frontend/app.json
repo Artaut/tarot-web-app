@@ -10,7 +10,11 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.your.mystictarot"
+      "bundleIdentifier": "com.your.mystictarot",
+      "infoPlist": {
+        "NSUserTrackingUsageDescription": "Reklam deneyimini iyileştirmek için cihaz tanımlayıcısına erişim izni isteyebiliriz. Reddetmeniz halinde reklamlarda kişiselleştirme yapılmaz."
+      },
+      "associatedDomains": ["applinks:mystic-tarot-24.preview.emergentagent.com"]
     },
     "android": {
       "adaptiveIcon": {
