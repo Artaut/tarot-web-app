@@ -15,6 +15,8 @@ export const TestIds = AdsMod?.TestIds ?? {
   INTERSTITIAL: 'ca-app-pub-3940256099942544/1033173712',
   BANNER: 'ca-app-pub-3940256099942544/6300978111',
 };
+export const BannerAd = AdsMod?.BannerAd ?? ((() => null) as any);
+export const BannerAdSize = AdsMod?.BannerAdSize ?? { ANCHORED_ADAPTIVE_BANNER: 'ANCHORED_ADAPTIVE_BANNER' };
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
