@@ -66,6 +66,24 @@ interface TarotCard {
 }
 
 export default function CardDetailScreen() {
+  const flip = useSharedValue(0);
+  const [sfxEnabled, setSfxEnabled] = useState(true);
+  const [hapticsEnabled, setHapticsEnabled] = useState(true);
+  const [sound, setSound] = useState<Audio.Sound | null>(null);
+
+  const frontStyle = useAnimatedStyle(() => ({
+    transform: [
+      { rotateY: `${flip.value * 180}deg` },
+      { perspective: 1000 },
+    ],
+  }));
+
+  const backStyle = useAnimatedStyle(() => ({
+    transform: [
+      { rotateY: `${flip.value * 180 + 180}deg` },
+      { perspective: 1000 },
+    ],
+  }));
   const { id } = useLocalSearchParams<{ id: string }>();
   const [card, setCard] = useState<TarotCard | null>(null);
   const [imageError, setImageError] = useState(false);
