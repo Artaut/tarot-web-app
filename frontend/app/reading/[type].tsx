@@ -137,6 +137,22 @@ export default function ReadingScreen() {
 
   const BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL;
 
+  // Persist AI toggle
+  useEffect(() => {
+    (async () => {
+      try {
+        const v = await AsyncStorage.getItem('settings:aiEnabled');
+        if (v !== null) setAiEnabled(v === '1');
+      } catch (e) {}
+    })();
+  }, []);
+
+  const toggleAi = async () => {
+    const next = !aiEnabled;
+    setAiEnabled(next);
+    try { await AsyncStorage.setItem('settings:aiEnabled', next ? '1' : '0'); } catch (e) {}
+  };
+
   // Okuma türü konfigürasyonu
   const readingConfig = type ? t.readings[type as keyof typeof t.readings] : null;
   const needsQuestion = type === 'yes_no';
