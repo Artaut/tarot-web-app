@@ -16,6 +16,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, router } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { logEvent } from '../../utils/telemetry';
+import { useRef } from 'react';
 
 const { width, height } = Dimensions.get('window');
 const CARD_WIDTH = width * 0.25;
