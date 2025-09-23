@@ -15,6 +15,10 @@ import { Image as ExpoImage } from 'expo-image';
 import { Image as RNImage } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams } from 'expo-router';
+import Animated, { useSharedValue, useAnimatedStyle, withTiming, withSpring } from 'react-native-reanimated';
+import { TapGestureHandler } from 'react-native-gesture-handler';
+import * as Haptics from 'expo-haptics';
+import { Audio } from 'expo-av';
 
 const { width } = Dimensions.get('window');
 const CARD_WIDTH = width * 0.4;
