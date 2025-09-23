@@ -71,8 +71,7 @@
           "resizeMode": "contain",
           "backgroundColor": "#000"
         }
-      ],
-      "expo-tracking-transparency"
+      ]
     ],
     "experiments": {
       "typedRoutes": true
