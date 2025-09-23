@@ -739,11 +739,11 @@ async def get_all_cards(language: str = "en"):
 
 @api_router.get("/cards/{card_id}", response_model=TarotCard)
 async def get_card(card_id: int, language: str = "en"):
-    """Get a specific card by ID with language support"""
+    """Get a specific card by ID with language support. Includes base64 image."""
     for card_data in MAJOR_ARCANA:
         if card_data["id"] == card_id:
+            # Build base card dict with language
             if language == "tr":
-                # Return Turkish version
                 card = {
                     "id": card_data["id"],
                     "name": card_data.get("name_tr", card_data["name"]),
@@ -756,7 +756,6 @@ async def get_card(card_id: int, language: str = "en"):
                     "yes_no_meaning": card_data.get("yes_no_meaning_tr", card_data["yes_no_meaning"])
                 }
             else:
-                # Return English version (default)
                 card = {
                     "id": card_data["id"],
                     "name": card_data["name"],
@@ -768,6 +767,9 @@ async def get_card(card_id: int, language: str = "en"):
                     "symbolism": card_data["symbolism"],
                     "yes_no_meaning": card_data["yes_no_meaning"]
                 }
+            # Attach base64 image from local file if available
+            local_path = card_data.get("image_local")
+            card["image_base64"] = load_image_b64(local_path) if local_path else None
             return TarotCard(**card)
     raise HTTPException(status_code=404, detail="Card not found")
 
