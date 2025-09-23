@@ -357,17 +357,41 @@ backend:
           agent: "testing"
           comment: "Successfully tested - interpretations generated properly for all reading types. Content varies based on reading type and includes card meanings, positions, and contextual advice."
 
-  - task: "Error handling for invalid requests"
+  - task: "Turkish language support for GET /api/cards endpoint"
     implemented: true
     working: true
     file: "backend/server.py"
     stuck_count: 0
-    priority: "medium"
+    priority: "high"
     needs_retesting: false
     status_history:
         - working: true
           agent: "testing"
-          comment: "Successfully tested - proper 404 responses for invalid card IDs and invalid reading types. Error handling working correctly."
+          comment: "Successfully tested - GET /api/cards?language=tr returns exactly 22 cards with unique IDs 0-21 and Turkish names (15 Turkish names found). Confirmed NO image_base64 in list items as required. Sample Turkish names: 'Deli', 'Ermiş', 'Yargı'."
+
+  - task: "Turkish language support for GET /api/cards/{id} endpoint with image_base64"
+    implemented: true
+    working: true
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "Successfully tested - GET /api/cards/20?language=tr includes image_base64 (84,911 bytes) and correct Turkish name 'Yargı'. GET /api/cards/9?language=tr includes image_base64 (164,767 bytes) and correct Turkish name 'Ermiş'. Both return valid data URIs and match TarotCard model structure."
+
+  - task: "Turkish language support for POST /api/reading/card_of_day endpoint"
+    implemented: true
+    working: true
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "Successfully tested - POST /api/reading/card_of_day?language=tr works with Turkish fields and interpretation. Card selection draws from unique 22 set, Turkish interpretation generated correctly."
 
 frontend:
   # No frontend testing performed as per instructions
