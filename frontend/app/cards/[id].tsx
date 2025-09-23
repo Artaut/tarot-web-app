@@ -49,7 +49,9 @@ const translations = {
     uprightMeaning: "Düz Anlam",
     reversedMeaning: "Ters Anlam",
     symbolism: "Sembolizm",
-    yesNoReading: "Evet/Hayır Falı"
+    yesNoReading: "Evet/Hayır Falı",
+    sound: "Ses",
+    haptics: "Titreşim"
   }
 };
 
