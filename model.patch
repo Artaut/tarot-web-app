@@ -192,7 +192,7 @@ index 1b590cc..ae4fc58 100644
 ---+from typing import Dict, List, Any
 ---+
 ---+# Get backend URL from environment
----+BACKEND_URL = "https://destiny-tarot-2.preview.emergentagent.com/api"
+---+BACKEND_URL = "https://mystic-tarot-24.preview.emergentagent.com/api"
 ---+
 ---+class TarotAPITester:
 ---+    def __init__(self, base_url: str):
