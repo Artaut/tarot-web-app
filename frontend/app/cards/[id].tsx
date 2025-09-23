@@ -151,13 +151,23 @@ export default function CardDetailScreen() {
           {/* Card Visual with Image */}
           <View style={styles.cardDisplay}>
             <View style={styles.card}>
-              {card.image_base64 ? (
+              {card.image_base64 && !imageError ? (
                 <View style={styles.cardImageWrapper}>
                   <ExpoImage
                     source={{ uri: card.image_base64 }}
                     style={styles.cardImage}
                     contentFit="cover"
                     transition={200}
+                    onError={() => setImageError(true)}
+                  />
+                </View>
+              ) : card.image_base64 && imageError ? (
+                <View style={styles.cardImageWrapper}>
+                  <RNImage
+                    source={{ uri: card.image_base64 }}
+                    style={styles.cardImage}
+                    resizeMode="cover"
+                    onError={() => setImageError(true)}
                   />
                 </View>
               ) : (
