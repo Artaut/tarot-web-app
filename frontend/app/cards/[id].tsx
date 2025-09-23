@@ -184,16 +184,29 @@ export default function CardDetailScreen() {
         <ScrollView showsVerticalScrollIndicator={false}>
           {/* Language Toggle Button */}
           <View style={styles.languageContainer}>
-            <TouchableOpacity 
-              style={styles.languageButton}
-              onPress={toggleLanguage}
-              activeOpacity={0.7}
-            >
-              <Ionicons name="language" size={20} color="white" />
-              <Text style={styles.languageText}>
-                {language === 'en' ? 'TR' : 'EN'}
-              </Text>
-            </TouchableOpacity>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              {/* SFX toggle */}
+              <TouchableOpacity onPress={toggleSfx} style={styles.pillToggle} activeOpacity={0.7}>
+                <Ionicons name={sfxEnabled ? 'volume-high' : 'volume-mute'} size={18} color={sfxEnabled ? '#4CAF50' : '#FF6B6B'} />
+                <Text style={styles.pillToggleText}>{t.sound}</Text>
+              </TouchableOpacity>
+              {/* Haptics toggle */}
+              <TouchableOpacity onPress={toggleHaptics} style={[styles.pillToggle, { marginLeft: 8 }]} activeOpacity={0.7}>
+                <Ionicons name={hapticsEnabled ? 'phone-portrait' : 'phone-portrait-outline'} size={18} color={hapticsEnabled ? '#4CAF50' : '#FF6B6B'} />
+                <Text style={styles.pillToggleText}>{t.haptics}</Text>
+              </TouchableOpacity>
+              {/* Language toggle */}
+              <TouchableOpacity 
+                style={[styles.languageButton, { marginLeft: 8 }]}
+                onPress={toggleLanguage}
+                activeOpacity={0.7}
+              >
+                <Ionicons name="language" size={20} color="white" />
+                <Text style={styles.languageText}>
+                  {language === 'en' ? 'TR' : 'EN'}
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
 
           {/* Card Visual with Image */}
