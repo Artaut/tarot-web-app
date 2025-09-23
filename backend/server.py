@@ -901,7 +901,77 @@ async def get_readings(limit: int = 10):
     return [TarotReading(**reading) for reading in readings]
 
 def generate_interpretation(reading_type: str, cards: List[Dict], question: Optional[str] = None, language: str = "en") -> str:
-    """Generate interpretation based on reading type and cards with language support"""
+    """Generate interpretation using AI if available; fallback to rule-based text"""
+    import os, requests, json
+    ai_key = os.getenv('EMERGENT_LLM_KEY')
+
+    # Build AI prompt summary from provided cards (already language-specific fields)
+    def build_prompt() -> str:
+        lang_line = "Lütfen yanıtı Türkçe yaz." if language == "tr" else "Please respond in English."
+        rt = reading_type
+        if language == "tr":
+            rt = {
+                "card_of_day": "Günün Kartı",
+                "classic_tarot": "Klasik Tarot",
+                "path_of_day": "Günün Yolu",
+                "yes_no": "Evet/Hayır",
+                "couples_tarot": "Çiftler Tarot"
+            }.get(reading_type, reading_type)
+        lines = [
+            f"Okuma türü: {rt}",
+            f"Dil: {'Türkçe' if language=='tr' else 'English'}",
+        ]
+        if question:
+            lines.append(("Soru: " if language=="tr" else "Question: ") + str(question))
+        lines.append("Kartlar:")
+        for idx, item in enumerate(cards, 1):
+            c = item["card"]
+            pos = item.get("position", f"Card {idx}")
+            rev = item.get("reversed", False)
+            meaning_key = f"meaning_{'reversed' if rev else 'upright'}"
+            meaning = c.get(meaning_key, "")
+            name = c.get("name", "")
+            kw = ", ".join(c.get("keywords", [])[:4])
+            if language == "tr":
+                lines.append(f"- {pos}: {name}{' (Ters)' if rev else ''} | Anahtar kelimeler: {kw} | Özet: {meaning}")
+            else:
+                lines.append(f"- {pos}: {name}{' (Reversed)' if rev else ''} | Keywords: {kw} | Summary: {meaning}")
+        if language == "tr":
+            lines.append("Görev: Kartların anlamlarına ve pozisyonlarına dayanarak, empatik, akıcı ve pratik öneriler içeren bir Tarot yorumu yaz. Kısa ve tutarlı olsun; tekrardan kaçın. Markdown kullanma.")
+        else:
+            lines.append("Task: Based on the cards and positions, write an empathetic, coherent Tarot reading with practical advice. Keep it concise; avoid repetition. Do not use Markdown.")
+        lines.append(lang_line)
+        return "\n".join(lines)
+
+    # Try AI if key exists
+    if ai_key:
+        try:
+            payload = {
+                "model": os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
+                "messages": [
+                    {"role": "system", "content": "You are an expert Tarot interpreter."},
+                    {"role": "user", "content": build_prompt()}
+                ],
+                "temperature": float(os.getenv("OPENAI_TEMPERATURE", "0.7")),
+                "max_tokens": int(os.getenv("OPENAI_MAX_TOKENS", "600"))
+            }
+            headers = {
+                "Authorization": f"Bearer {ai_key}",
+                "Content-Type": "application/json"
+            }
+            url = os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1") + "/chat/completions"
+            resp = requests.post(url, headers=headers, data=json.dumps(payload), timeout=15)
+            if resp.status_code == 200:
+                data = resp.json()
+                if data.get("choices"):
+                    content = data["choices"][0]["message"]["content"]
+                    if content and isinstance(content, str):
+                        return content.strip()
+            # fall through on non-200 or empty content
+        except Exception as e:
+            logging.warning(f"AI interpretation failed, falling back. Error: {e}")
+
+    # Fallback: original rule-based interpretation
     interpretation = ""
     
     if reading_type == "card_of_day":
