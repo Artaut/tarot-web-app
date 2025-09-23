@@ -237,6 +237,21 @@ export default function CardDetailScreen() {
               </View>
             </View>
           </View>
+
+          {/* Debug Panel (geçici) */}
+          <View style={styles.debugPanel}>
+            <Text style={styles.debugTitle}>Görsel Durumu (geçici tanılama)</Text>
+            <Text style={styles.debugText}>hasImage: {card.image_base64 ? 'evet' : 'hayır'}</Text>
+            <Text style={styles.debugText}>prefix: {card.image_base64 ? card.image_base64.slice(0, 30) + '…' : '-'}</Text>
+            <Text style={styles.debugText}>imageError: {imageError ? 'evet' : 'hayır'}</Text>
+            <TouchableOpacity
+              onPress={() => { setImageError(false); fetchCard(); }}
+              style={styles.debugButton}
+              activeOpacity={0.7}
+            >
+              <Text style={styles.debugButtonText}>Görseli yeniden yükle</Text>
+            </TouchableOpacity>
+          </View>
         </ScrollView>
       </LinearGradient>
     </SafeAreaView>
