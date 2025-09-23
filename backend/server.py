@@ -659,6 +659,44 @@ MAJOR_ARCANA = [
     }
 ]
 
+# Deduplicate to exactly 22 unique cards by id
+@lru_cache(maxsize=None)
+def get_unique_major_arcana() -> List[Dict[str, Any]]:
+    seen: Dict[int, Dict[str, Any]] = {}
+    for c in MAJOR_ARCANA:
+        cid = c.get('id')
+        if cid is not None and cid not in seen:
+            seen[cid] = c
+    # return ordered by id
+    return [seen[i] for i in sorted(seen.keys())]
+
+# Map of ID -> local image path. We will send base64 only from detail endpoint
+IMAGES_BY_ID: Dict[int, str] = {
+    0: 'card_images/joker-karti.jpg',
+    1: 'card_images/buyucu-karti.jpg',
+    2: 'card_images/azize-karti.jpg',
+    3: 'card_images/imparatorice-karti.jpg',
+    4: 'card_images/imparator-karti.jpg',
+    5: 'card_images/aziz-karti.jpg',
+    6: 'card_images/asiklar-karti.jpg',
+    7: 'card_images/araba-karti.jpg',
+    8: 'card_images/guc-karti.jpg',
+    9: 'card_images/ermis-karti.jpg',
+    10: 'card_images/kader-carki-karti.jpg',
+    11: 'card_images/adalet-karti.jpg',
+    12: 'card_images/asilan-adam-karti.jpg',
+    13: 'card_images/olum-karti.jpg',
+    14: 'card_images/denge-karti.jpg',
+    15: 'card_images/seytan-karti.jpg',
+    16: 'card_images/kule-karti.jpg',
+    17: 'card_images/yildiz-karti.jpg',
+    18: 'card_images/ay-karti.jpg',
+    19: 'card_images/gunes-karti.jpg',
+    20: 'card_images/yargi.webp',
+    21: 'card_images/dunya-karti.jpg',
+}
+
+
 # Reading Types Configuration
 READING_TYPES = [
     {
