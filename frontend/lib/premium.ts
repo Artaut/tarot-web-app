@@ -79,9 +79,34 @@ export type OfferingPick = {
   annual?: any | null;
 };
 
+const PACKAGE_KEYWORDS: Record<string, string[]> = {
+  MONTHLY: ["monthly", "month", "mo"],
+  ANNUAL: ["annual", "year", "yr"],
+};
+
+function identifierMatches(pkg: any, packageType: string) {
+  const keywords = PACKAGE_KEYWORDS[packageType];
+  if (!keywords?.length) return false;
+
+  const identifiers = [pkg?.identifier, pkg?.product?.identifier]
+    .filter((value): value is string => typeof value === "string")
+    .map((value) => value.toLowerCase());
+
+  return identifiers.some((value) => keywords.some((key) => value.includes(key)));
+}
+
 function pickPackageByType(packages: any[] | undefined | null, packageType: string) {
   if (!Array.isArray(packages)) return null;
   return packages.find((pkg) => pkg?.packageType === packageType) ?? null;
+}
+
+function pickPackageByIdentifier(packages: any[] | undefined | null, packageType: string) {
+  if (!Array.isArray(packages)) return null;
+  return packages.find((pkg) => identifierMatches(pkg, packageType)) ?? null;
+}
+
+function pickPackageFromList(packages: any[] | undefined | null, packageType: string) {
+  return pickPackageByType(packages, packageType) ?? pickPackageByIdentifier(packages, packageType) ?? null;
 }
 
 function pickPackageFromOffering(offering: any, packageType: string) {
@@ -89,8 +114,8 @@ function pickPackageFromOffering(offering: any, packageType: string) {
   const directKey = packageType.toLowerCase();
   return (
     offering?.[directKey] ??
-    pickPackageByType(offering?.availablePackages, packageType) ??
-    pickPackageByType(offering?.packages, packageType)
+    pickPackageFromList(offering?.availablePackages, packageType) ??
+    pickPackageFromList(offering?.packages, packageType)
   );
 }
 
@@ -114,10 +139,7 @@ function findPackage(offerings: any, packageType: string) {
     if (pkg) return pkg;
   }
 
-  return (
-    pickPackageByType(offerings?.availablePackages, packageType) ??
-    pickPackageByType(offerings?.packages, packageType)
-  );
+  return pickPackageFromList(offerings?.availablePackages, packageType) ?? pickPackageFromList(offerings?.packages, packageType);
 }
 
 export function normalizeOfferingPick(offerings: any): OfferingPick {
