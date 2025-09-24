@@ -77,6 +77,37 @@ function pickPackageByType(packages: any[] | undefined | null, packageType: stri
   return packages.find((pkg) => pkg?.packageType === packageType) ?? null;
 }
 
+function pickPackageFromOffering(offering: any, packageType: string) {
+  if (!offering) return null;
+  const directKey = packageType.toLowerCase();
+  return (
+    offering?.[directKey] ??
+    pickPackageByType(offering?.availablePackages, packageType) ??
+    pickPackageByType(offering?.packages, packageType)
+  );
+}
+
+function collectOfferings(offerings: any) {
+  if (!offerings?.all) return [] as any[];
+  const all = offerings.all as Record<string, any>;
+  return Object.values(all).filter(Boolean);
+}
+
+function findPackage(offerings: any, packageType: string) {
+  const fromCurrent = pickPackageFromOffering(offerings?.current, packageType);
+  if (fromCurrent) return fromCurrent;
+
+  for (const offering of collectOfferings(offerings)) {
+    const pkg = pickPackageFromOffering(offering, packageType);
+    if (pkg) return pkg;
+  }
+
+  return (
+    pickPackageByType(offerings?.availablePackages, packageType) ??
+    pickPackageByType(offerings?.packages, packageType)
+  );
+}
+
 export async function loadOfferings(): Promise<OfferingPick | null> {
   await initRevenueCat();
   if (!rcAvailable) return null;
@@ -84,11 +115,8 @@ export async function loadOfferings(): Promise<OfferingPick | null> {
   const offerings: any = await rcGetOfferings();
   if (!offerings) return { monthly: null, annual: null };
 
-  const allOfferings = offerings?.all ? Object.values(offerings.all as Record<string, any>) : [];
-  const current = offerings?.current ?? allOfferings.find(Boolean) ?? null;
-
-  const monthly = current?.monthly ?? pickPackageByType(current?.availablePackages, "MONTHLY");
-  const annual = current?.annual ?? pickPackageByType(current?.availablePackages, "ANNUAL");
+  const monthly = findPackage(offerings, "MONTHLY");
+  const annual = findPackage(offerings, "ANNUAL");
 
   return { monthly: monthly ?? null, annual: annual ?? null };
 }
