@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Platform, View, Text, Pressable, ActivityIndicator, Alert } from "react-native";
-import { loadOfferings } from "@/lib/premium";
+import { loadOfferings, normalizeOfferingPick } from "@/lib/premium";
 import { rcAvailable, rcPurchasePackage, rcRestorePurchases } from "@/lib/rc";
 import { logEvent } from "@/utils/telemetry";
 
@@ -14,9 +14,10 @@ export default function Paywall({ onClose }: { onClose?: () => void }) {
   useEffect(() => {
     (async () => {
       try {
-        const o = await loadOfferings();
-        setMonthly(o?.monthly ?? null);
-        setAnnual(o?.annual ?? null);
+        const raw = await loadOfferings();
+        const pick = normalizeOfferingPick(raw);
+        setMonthly(pick.monthly ?? null);
+        setAnnual(pick.annual ?? null);
         logEvent({ event: "paywall_view" });
       } finally { 
         setLoading(false); 

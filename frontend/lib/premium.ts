@@ -100,6 +100,11 @@ function collectOfferings(offerings: any) {
   return Object.values(all).filter(Boolean);
 }
 
+function isOfferingPick(value: any): value is OfferingPick {
+  if (!value || typeof value !== "object") return false;
+  return "monthly" in value || "annual" in value;
+}
+
 function findPackage(offerings: any, packageType: string) {
   const fromCurrent = pickPackageFromOffering(offerings?.current, packageType);
   if (fromCurrent) return fromCurrent;
@@ -115,18 +120,28 @@ function findPackage(offerings: any, packageType: string) {
   );
 }
 
+export function normalizeOfferingPick(offerings: any): OfferingPick {
+  if (!offerings) return { monthly: null, annual: null };
+  if (isOfferingPick(offerings)) {
+    return {
+      monthly: offerings.monthly ?? null,
+      annual: offerings.annual ?? null,
+    };
+  }
+
+  const monthly = findPackage(offerings, "MONTHLY");
+  const annual = findPackage(offerings, "ANNUAL");
+
+  return { monthly: monthly ?? null, annual: annual ?? null };
+}
+
 export async function loadOfferings(): Promise<OfferingPick | null> {
   await initRevenueCat();
   if (!rcAvailable) return null;
 
   try {
     const offerings: any = await rcGetOfferings();
-    if (!offerings) return { monthly: null, annual: null };
-
-    const monthly = findPackage(offerings, "MONTHLY");
-    const annual = findPackage(offerings, "ANNUAL");
-
-    return { monthly: monthly ?? null, annual: annual ?? null };
+    return normalizeOfferingPick(offerings);
   } catch (err) {
     if (typeof __DEV__ !== "undefined" && __DEV__) {
       console.warn("RevenueCat offerings failed", err);
