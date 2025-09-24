@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Platform, View, Text, Pressable, ActivityIndicator, Alert } from "react-native";
-import { loadOfferings, normalizeOfferingPick } from "@/lib/premium";
+import { loadOfferings } from "@/lib/premium";
 import { rcAvailable, rcPurchasePackage, rcRestorePurchases } from "@/lib/rc";
 import { logEvent } from "@/utils/telemetry";
 
@@ -14,10 +14,14 @@ export default function Paywall({ onClose }: { onClose?: () => void }) {
   useEffect(() => {
     (async () => {
       try {
-        const raw = await loadOfferings();
-        const pick = normalizeOfferingPick(raw);
-        setMonthly(pick.monthly ?? null);
-        setAnnual(pick.annual ?? null);
+        const pick = await loadOfferings();
+        if (pick) {
+          setMonthly(pick.monthly ?? null);
+          setAnnual(pick.annual ?? null);
+        } else {
+          setMonthly(null);
+          setAnnual(null);
+        }
         logEvent({ event: "paywall_view" });
       } finally { 
         setLoading(false); 
@@ -28,7 +32,7 @@ export default function Paywall({ onClose }: { onClose?: () => void }) {
   async function buy(pkg: any | null) {
     if (!pkg || unsupported) return;
     try {
-      logEvent({ event: "purchase_attempt", type: pkg.identifier });
+      logEvent({ event: "purchase_start", type: pkg.identifier });
       const { customerInfo } = await rcPurchasePackage(pkg);
       const active = !!customerInfo.entitlements.active.premium || !!customerInfo.entitlements.active.no_ads;
       if (active) {
@@ -36,7 +40,7 @@ export default function Paywall({ onClose }: { onClose?: () => void }) {
         onClose?.();
       }
     } catch (e: any) {
-      logEvent({ event: "purchase_error", type: pkg?.identifier });
+      logEvent({ event: "purchase_fail", type: pkg?.identifier });
       if (e?.userCancelled) return;
       Alert.alert("Satın alma başarısız", "Lütfen tekrar deneyin.");
     }

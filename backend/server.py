@@ -230,9 +230,9 @@ TelemetryEventName = Literal[
     "length_change",
     "share_click",
     "paywall_view",
-    "purchase_attempt",
+    "purchase_start",
     "purchase_success",
-    "purchase_error",
+    "purchase_fail",
     "restore_success",
 ]
 

@@ -2,9 +2,9 @@ type ReadingTelemetryEvent = "reading_begin" | "reading_result" | "ai_toggle" | 
 type MonetizationTelemetryEvent =
   | "share_click"
   | "paywall_view"
-  | "purchase_attempt"
+  | "purchase_start"
   | "purchase_success"
-  | "purchase_error"
+  | "purchase_fail"
   | "restore_success";
 
 export type TelemetryEvent = {
