@@ -34,7 +34,7 @@ export default function ResultActionsNative({
   const onShare = useCallback(async () => {
     try {
       await Share.share({ message: `Kart yorumum: ${deep}` });
-      logEvent({ event: "share_click" as any, type: readingType });
+      logEvent({ event: "share_click", type: readingType });
     } catch {}
   }, [deep, readingType]);
 

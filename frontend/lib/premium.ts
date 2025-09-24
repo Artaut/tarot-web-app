@@ -67,13 +67,28 @@ export function useEntitlements() {
   return state;
 }
 
-export async function loadOfferings() {
-  await initRevenueCat();
-  if (!rcAvailable) return null;
-  return rcGetOfferings();
-}
-
 export type OfferingPick = {
   monthly?: any | null;
   annual?: any | null;
 };
+
+function pickPackageByType(packages: any[] | undefined | null, packageType: string) {
+  if (!Array.isArray(packages)) return null;
+  return packages.find((pkg) => pkg?.packageType === packageType) ?? null;
+}
+
+export async function loadOfferings(): Promise<OfferingPick | null> {
+  await initRevenueCat();
+  if (!rcAvailable) return null;
+
+  const offerings: any = await rcGetOfferings();
+  if (!offerings) return { monthly: null, annual: null };
+
+  const allOfferings = offerings?.all ? Object.values(offerings.all as Record<string, any>) : [];
+  const current = offerings?.current ?? allOfferings.find(Boolean) ?? null;
+
+  const monthly = current?.monthly ?? pickPackageByType(current?.availablePackages, "MONTHLY");
+  const annual = current?.annual ?? pickPackageByType(current?.availablePackages, "ANNUAL");
+
+  return { monthly: monthly ?? null, annual: annual ?? null };
+}

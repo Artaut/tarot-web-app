@@ -1,5 +1,14 @@
+type ReadingTelemetryEvent = "reading_begin" | "reading_result" | "ai_toggle" | "tone_change" | "length_change";
+type MonetizationTelemetryEvent =
+  | "share_click"
+  | "paywall_view"
+  | "purchase_attempt"
+  | "purchase_success"
+  | "purchase_error"
+  | "restore_success";
+
 export type TelemetryEvent = {
-  event: "reading_begin" | "reading_result" | "ai_toggle" | "tone_change" | "length_change";
+  event: ReadingTelemetryEvent | MonetizationTelemetryEvent;
   ts?: string;                 // ISO
   sessionId?: string;          // UUID v4 önerilir
   userIdHash?: string | null;  // opsiyonel (PII yok; salted hash)
