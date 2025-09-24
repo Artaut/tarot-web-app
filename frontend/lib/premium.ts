@@ -20,7 +20,6 @@ export async function getOrCreateAppUserId() {
 
 export async function initRevenueCat() {
   if (_started) return;
-  _started = true;
 
   const apiKey = Platform.select({
     android: process.env.EXPO_PUBLIC_RC_ANDROID_KEY,
@@ -30,9 +29,17 @@ export async function initRevenueCat() {
 
   // Web veya anahtar yoksa sessizce geç
   if (!apiKey || !rcAvailable) return;
-  
-  const appUserId = await getOrCreateAppUserId();
-  await rcConfigure({ apiKey, appUserID: appUserId });
+
+  _started = true;
+  try {
+    const appUserId = await getOrCreateAppUserId();
+    await rcConfigure({ apiKey, appUserID: appUserId });
+  } catch (err) {
+    _started = false;
+    if (typeof __DEV__ !== "undefined" && __DEV__) {
+      console.warn("RevenueCat initialization failed", err);
+    }
+  }
 }
 
 export function useEntitlements() {
@@ -112,11 +119,18 @@ export async function loadOfferings(): Promise<OfferingPick | null> {
   await initRevenueCat();
   if (!rcAvailable) return null;
 
-  const offerings: any = await rcGetOfferings();
-  if (!offerings) return { monthly: null, annual: null };
+  try {
+    const offerings: any = await rcGetOfferings();
+    if (!offerings) return { monthly: null, annual: null };
 
-  const monthly = findPackage(offerings, "MONTHLY");
-  const annual = findPackage(offerings, "ANNUAL");
+    const monthly = findPackage(offerings, "MONTHLY");
+    const annual = findPackage(offerings, "ANNUAL");
 
-  return { monthly: monthly ?? null, annual: annual ?? null };
+    return { monthly: monthly ?? null, annual: annual ?? null };
+  } catch (err) {
+    if (typeof __DEV__ !== "undefined" && __DEV__) {
+      console.warn("RevenueCat offerings failed", err);
+    }
+    return { monthly: null, annual: null };
+  }
 }

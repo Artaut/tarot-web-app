@@ -27,6 +27,7 @@ export async function logEvent(ev: TelemetryEvent) {
     const ts = new Date().toISOString();
     const body = JSON.stringify({ events: [{ ts, ...ev }] });
     const base = process.env.EXPO_PUBLIC_BACKEND_URL;
+    if (!base) return;
     const url = `${base}/api/log`;
     await fetch(url, {
       method: 'POST',

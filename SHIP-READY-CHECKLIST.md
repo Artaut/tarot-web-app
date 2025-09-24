@@ -125,6 +125,13 @@ npx expo config --json
 npx expo prebuild -p android --clean
 ```
 
+### Environment Değerleri
+- [ ] `EXPO_PUBLIC_BACKEND_URL`
+- [ ] `EXPO_PUBLIC_RC_IOS_KEY`
+- [ ] `EXPO_PUBLIC_RC_ANDROID_KEY`
+- [ ] `EXPO_PUBLIC_ADMOB_BANNER_ID`
+- [ ] `EXPO_PUBLIC_ADMOB_INTERSTITIAL_ID`
+
 ### Yaygın Sorunlar ve Çözümler
 1. **"Module not found" hatası**: AdMob plugin app.json'dan geçici çıkar
 2. **"Prebuild failed"**: Dependencies güncellemesi gerekli

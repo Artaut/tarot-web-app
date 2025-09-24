@@ -19,7 +19,11 @@ export default function ResultActionsNative({
   const onNew = useCallback(async () => {
     try {
       if (gated && await canShowInterstitial()) {
-        interstitial.addAdEventListener(AdEventType.LOADED, () => interstitial.show());
+        const unsubscribe = interstitial.addAdEventListener(AdEventType.LOADED, () => {
+          unsubscribe?.();
+          interstitial.show();
+          loadInterstitial();
+        });
         loadInterstitial();
       }
     } catch {}
