@@ -222,8 +222,23 @@ async def get_card_image(card_id: int):
         raise HTTPException(status_code=500, detail="Failed to load image")
 
 # Telemetry logging
+TelemetryEventName = Literal[
+    "reading_begin",
+    "reading_result",
+    "ai_toggle",
+    "tone_change",
+    "length_change",
+    "share_click",
+    "paywall_view",
+    "purchase_start",
+    "purchase_success",
+    "purchase_fail",
+    "restore_success",
+]
+
+
 class TelemetryEvent(BaseModel):
-    event: Literal["reading_begin","reading_result","ai_toggle","tone_change","length_change"]
+    event: TelemetryEventName
     ts: Optional[str] = None
     sessionId: Optional[str] = None
     userIdHash: Optional[str] = None

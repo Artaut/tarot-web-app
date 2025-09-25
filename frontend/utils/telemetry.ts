@@ -1,5 +1,14 @@
+type ReadingTelemetryEvent = "reading_begin" | "reading_result" | "ai_toggle" | "tone_change" | "length_change";
+type MonetizationTelemetryEvent =
+  | "share_click"
+  | "paywall_view"
+  | "purchase_start"
+  | "purchase_success"
+  | "purchase_fail"
+  | "restore_success";
+
 export type TelemetryEvent = {
-  event: "reading_begin" | "reading_result" | "ai_toggle" | "tone_change" | "length_change";
+  event: ReadingTelemetryEvent | MonetizationTelemetryEvent;
   ts?: string;                 // ISO
   sessionId?: string;          // UUID v4 önerilir
   userIdHash?: string | null;  // opsiyonel (PII yok; salted hash)
@@ -18,6 +27,7 @@ export async function logEvent(ev: TelemetryEvent) {
     const ts = new Date().toISOString();
     const body = JSON.stringify({ events: [{ ts, ...ev }] });
     const base = process.env.EXPO_PUBLIC_BACKEND_URL;
+    if (!base) return;
     const url = `${base}/api/log`;
     await fetch(url, {
       method: 'POST',

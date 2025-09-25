@@ -19,7 +19,11 @@ export default function ResultActionsNative({
   const onNew = useCallback(async () => {
     try {
       if (gated && await canShowInterstitial()) {
-        interstitial.addAdEventListener(AdEventType.LOADED, () => interstitial.show());
+        const unsubscribe = interstitial.addAdEventListener(AdEventType.LOADED, () => {
+          unsubscribe?.();
+          interstitial.show();
+          loadInterstitial();
+        });
         loadInterstitial();
       }
     } catch {}
@@ -34,7 +38,7 @@ export default function ResultActionsNative({
   const onShare = useCallback(async () => {
     try {
       await Share.share({ message: `Kart yorumum: ${deep}` });
-      logEvent({ event: "share_click" as any, type: readingType });
+      logEvent({ event: "share_click", type: readingType });
     } catch {}
   }, [deep, readingType]);
 

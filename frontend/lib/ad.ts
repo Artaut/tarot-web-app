@@ -21,7 +21,14 @@ export const BannerAdSize = AdsMod?.BannerAdSize ?? { ANCHORED_ADAPTIVE_BANNER: 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Interstitial = AdsMod?.InterstitialAd ?? FallbackInterstitial;
-const interUnit = __DEV__ ? TestIds.INTERSTITIAL : "ca-app-pub-XXXX/INTER";
+
+const isDev = typeof __DEV__ !== "undefined" && __DEV__;
+const prodInterstitial = process.env.EXPO_PUBLIC_ADMOB_INTERSTITIAL_ID;
+const prodBanner = process.env.EXPO_PUBLIC_ADMOB_BANNER_ID;
+
+const interUnit = isDev ? TestIds.INTERSTITIAL : prodInterstitial || TestIds.INTERSTITIAL;
+export const bannerAdUnitId = isDev ? TestIds.BANNER : prodBanner || TestIds.BANNER;
+
 export const interstitial = Interstitial.createForAdRequest(interUnit);
 
 export async function canShowInterstitial() {

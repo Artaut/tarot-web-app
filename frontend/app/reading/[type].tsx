@@ -23,7 +23,7 @@ import ResultActionsNative from '@/components/ResultActions.native';
 import { cardIdFromNumeric } from '@/utils/cards';
 import Paywall from '@/components/Paywall';
 import { useEntitlements } from '@/lib/premium';
-import { BannerAd, BannerAdSize } from '@/lib/ad';
+import { BannerAd, BannerAdSize, bannerAdUnitId } from '@/lib/ad';
 import { initConsent } from '@/lib/consent';
 
 const { width, height } = Dimensions.get('window');
@@ -345,7 +345,11 @@ export default function ReadingScreen() {
               {firstCardId && <ResultActionsNative cardId={firstCardId} readingType={type as string} />}
 
               {gated && consent && (
-                <BannerAd unitId={"ca-app-pub-XXXX/BANNER"} size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER} requestOptions={{ requestNonPersonalizedAdsOnly: !consent.personalized }} />
+                <BannerAd
+                  unitId={bannerAdUnitId}
+                  size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+                  requestOptions={{ requestNonPersonalizedAdsOnly: !consent.personalized }}
+                />
               )}
 
               <TouchableOpacity style={styles.newReadingButton} onPress={() => { setShowCards(false); setReading(null); setQuestion(''); }}>

@@ -20,7 +20,6 @@ export async function getOrCreateAppUserId() {
 
 export async function initRevenueCat() {
   if (_started) return;
-  _started = true;
 
   const apiKey = Platform.select({
     android: process.env.EXPO_PUBLIC_RC_ANDROID_KEY,
@@ -30,9 +29,17 @@ export async function initRevenueCat() {
 
   // Web veya anahtar yoksa sessizce geç
   if (!apiKey || !rcAvailable) return;
-  
-  const appUserId = await getOrCreateAppUserId();
-  await rcConfigure({ apiKey, appUserID: appUserId });
+
+  _started = true;
+  try {
+    const appUserId = await getOrCreateAppUserId();
+    await rcConfigure({ apiKey, appUserID: appUserId });
+  } catch (err) {
+    _started = false;
+    if (typeof __DEV__ !== "undefined" && __DEV__) {
+      console.warn("RevenueCat initialization failed", err);
+    }
+  }
 }
 
 export function useEntitlements() {
@@ -67,13 +74,100 @@ export function useEntitlements() {
   return state;
 }
 
-export async function loadOfferings() {
-  await initRevenueCat();
-  if (!rcAvailable) return null;
-  return rcGetOfferings();
-}
-
 export type OfferingPick = {
   monthly?: any | null;
   annual?: any | null;
 };
+
+const PACKAGE_KEYWORDS: Record<string, string[]> = {
+  MONTHLY: ["monthly", "month", "mo"],
+  ANNUAL: ["annual", "year", "yr"],
+};
+
+function identifierMatches(pkg: any, packageType: string) {
+  const keywords = PACKAGE_KEYWORDS[packageType];
+  if (!keywords?.length) return false;
+
+  const identifiers = [pkg?.identifier, pkg?.product?.identifier]
+    .filter((value): value is string => typeof value === "string")
+    .map((value) => value.toLowerCase());
+
+  return identifiers.some((value) => keywords.some((key) => value.includes(key)));
+}
+
+function pickPackageByType(packages: any[] | undefined | null, packageType: string) {
+  if (!Array.isArray(packages)) return null;
+  return packages.find((pkg) => pkg?.packageType === packageType) ?? null;
+}
+
+function pickPackageByIdentifier(packages: any[] | undefined | null, packageType: string) {
+  if (!Array.isArray(packages)) return null;
+  return packages.find((pkg) => identifierMatches(pkg, packageType)) ?? null;
+}
+
+function pickPackageFromList(packages: any[] | undefined | null, packageType: string) {
+  return pickPackageByType(packages, packageType) ?? pickPackageByIdentifier(packages, packageType) ?? null;
+}
+
+function pickPackageFromOffering(offering: any, packageType: string) {
+  if (!offering) return null;
+  const directKey = packageType.toLowerCase();
+  return (
+    offering?.[directKey] ??
+    pickPackageFromList(offering?.availablePackages, packageType) ??
+    pickPackageFromList(offering?.packages, packageType)
+  );
+}
+
+function collectOfferings(offerings: any) {
+  if (!offerings?.all) return [] as any[];
+  const all = offerings.all as Record<string, any>;
+  return Object.values(all).filter(Boolean);
+}
+
+function isOfferingPick(value: any): value is OfferingPick {
+  if (!value || typeof value !== "object") return false;
+  return "monthly" in value || "annual" in value;
+}
+
+function findPackage(offerings: any, packageType: string) {
+  const fromCurrent = pickPackageFromOffering(offerings?.current, packageType);
+  if (fromCurrent) return fromCurrent;
+
+  for (const offering of collectOfferings(offerings)) {
+    const pkg = pickPackageFromOffering(offering, packageType);
+    if (pkg) return pkg;
+  }
+
+  return pickPackageFromList(offerings?.availablePackages, packageType) ?? pickPackageFromList(offerings?.packages, packageType);
+}
+
+export function normalizeOfferingPick(offerings: any): OfferingPick {
+  if (!offerings) return { monthly: null, annual: null };
+  if (isOfferingPick(offerings)) {
+    return {
+      monthly: offerings.monthly ?? null,
+      annual: offerings.annual ?? null,
+    };
+  }
+
+  const monthly = findPackage(offerings, "MONTHLY");
+  const annual = findPackage(offerings, "ANNUAL");
+
+  return { monthly: monthly ?? null, annual: annual ?? null };
+}
+
+export async function loadOfferings(): Promise<OfferingPick | null> {
+  await initRevenueCat();
+  if (!rcAvailable) return null;
+
+  try {
+    const offerings: any = await rcGetOfferings();
+    return normalizeOfferingPick(offerings);
+  } catch (err) {
+    if (typeof __DEV__ !== "undefined" && __DEV__) {
+      console.warn("RevenueCat offerings failed", err);
+    }
+    return { monthly: null, annual: null };
+  }
+}

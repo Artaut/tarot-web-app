@@ -14,10 +14,15 @@ export default function Paywall({ onClose }: { onClose?: () => void }) {
   useEffect(() => {
     (async () => {
       try {
-        const o = await loadOfferings();
-        setMonthly(o?.monthly ?? null);
-        setAnnual(o?.annual ?? null);
-        logEvent({ event: "paywall_view" as any });
+        const pick = await loadOfferings();
+        if (pick) {
+          setMonthly(pick.monthly ?? null);
+          setAnnual(pick.annual ?? null);
+        } else {
+          setMonthly(null);
+          setAnnual(null);
+        }
+        logEvent({ event: "paywall_view" });
       } finally { 
         setLoading(false); 
       }
@@ -27,15 +32,15 @@ export default function Paywall({ onClose }: { onClose?: () => void }) {
   async function buy(pkg: any | null) {
     if (!pkg || unsupported) return;
     try {
-      logEvent({ event: "purchase_attempt" as any, type: pkg.identifier });
+      logEvent({ event: "purchase_start", type: pkg.identifier });
       const { customerInfo } = await rcPurchasePackage(pkg);
       const active = !!customerInfo.entitlements.active.premium || !!customerInfo.entitlements.active.no_ads;
       if (active) {
-        logEvent({ event: "purchase_success" as any, type: pkg.identifier });
+        logEvent({ event: "purchase_success", type: pkg.identifier });
         onClose?.();
       }
     } catch (e: any) {
-      logEvent({ event: "purchase_error" as any, type: pkg?.identifier });
+      logEvent({ event: "purchase_fail", type: pkg?.identifier });
       if (e?.userCancelled) return;
       Alert.alert("Satın alma başarısız", "Lütfen tekrar deneyin.");
     }
@@ -45,7 +50,7 @@ export default function Paywall({ onClose }: { onClose?: () => void }) {
     if (unsupported) return;
     try {
       await rcRestorePurchases();
-      logEvent({ event: "restore_success" as any });
+      logEvent({ event: "restore_success" });
       onClose?.();
     } catch {
       Alert.alert("Geri yükleme başarısız", "Lütfen daha sonra deneyin.");
